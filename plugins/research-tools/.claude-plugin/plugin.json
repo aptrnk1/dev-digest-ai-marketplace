@@ -1,7 +1,7 @@
 {
   "name": "research-tools",
   "displayName": "Research Tools",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Read-only researcher agent: answers a concrete question from the codebase or the web with cited evidence",
   "author": {
     "name": "aptrnk1"
