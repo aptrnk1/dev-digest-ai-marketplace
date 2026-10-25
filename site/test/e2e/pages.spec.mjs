@@ -114,7 +114,7 @@ test.describe('copy', () => {
     await page.goto('plugin.html?name=hello');
     await page.getByRole('button', { name: 'Copy install' }).click();
     await expect(page.getByText('Не вдалося скопіювати — виділіть і скопіюйте вручну')).toBeVisible();
-    await expect(page.locator('.copy-fallback textarea')).toHaveValue(/\/plugin install hello@fixture-market/);
+    await expect(page.locator('.copy-fallback textarea')).toHaveValue(/claude plugin install hello@fixture-market/);
     await expect(page.locator('.toast')).toHaveCount(0);
   });
 });
