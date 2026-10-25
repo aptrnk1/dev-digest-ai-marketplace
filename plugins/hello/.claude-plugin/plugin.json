@@ -1,0 +1,9 @@
+{
+  "name": "hello",
+  "version": "0.1.0",
+  "description": "Example plugin: a greeting skill that shows the marketplace layout",
+  "author": {
+    "name": "aptrnk1"
+  },
+  "license": "MIT"
+}

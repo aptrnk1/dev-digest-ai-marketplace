@@ -1,0 +1,16 @@
+{
+  "name": "dev-digest",
+  "description": "Dev Digest AI plugins for Claude Code",
+  "owner": {
+    "name": "aptrnk1",
+    "url": "https://github.com/aptrnk1"
+  },
+  "plugins": [
+    {
+      "name": "hello",
+      "source": "./plugins/hello",
+      "description": "Example plugin: a greeting skill that shows the marketplace layout",
+      "category": "examples"
+    }
+  ]
+}
