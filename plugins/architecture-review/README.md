@@ -18,7 +18,7 @@ findings with evidence and a verdict.
 
 ```bash
 /plugin marketplace add aptrnk1/dev-digest-ai-marketplace
-/plugin install architecture-review@dev-digest
+/plugin install architecture-review@dev-digest-ai-marketplace
 ```
 
 The plugin depends on **`engineering-paved-path`** (`^1.0.0`), which installs

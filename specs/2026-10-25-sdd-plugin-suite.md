@@ -207,7 +207,7 @@ plugins/
 
 ## Acceptance criteria
 - AC1. `claude plugin validate . --strict` passes for the marketplace and for each of the 4 plugins.
-- AC2. `/plugin install sdd-engineering@dev-digest` installs and enables the three dependencies.
+- AC2. `/plugin install sdd-engineering@dev-digest-ai-marketplace` installs and enables the three dependencies.
   `claude plugin list` shows no dependency errors.
 - AC3. `research-tools`, `architecture-review` and `engineering-paved-path` install and
   work on their own.

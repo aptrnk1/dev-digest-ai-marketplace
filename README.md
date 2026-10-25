@@ -6,7 +6,14 @@ Claude Code plugin marketplace.
 
 ```bash
 /plugin marketplace add aptrnk1/dev-digest-ai-marketplace
-/plugin install <plugin>@dev-digest
+/plugin install <plugin>@dev-digest-ai-marketplace
+```
+
+Added the marketplace before it was renamed from `dev-digest`? Re-add it, then reinstall your plugins with the new suffix:
+
+```bash
+/plugin marketplace remove dev-digest
+/plugin marketplace add aptrnk1/dev-digest-ai-marketplace
 ```
 
 ## Plugins
@@ -37,7 +44,7 @@ Full rules: [docs/plugin-authoring.md](docs/plugin-authoring.md), [docs/release-
 2. Put components at the plugin root: `skills/`, `agents/`, `commands/`, `hooks/hooks.json`, `.mcp.json`.
 3. Add an entry to `.claude-plugin/marketplace.json` with `"source": "./plugins/<name>"`.
 4. Run `claude plugin validate . --strict`, then test locally:
-   `claude plugin marketplace add ./` and `claude plugin install <name>@dev-digest`.
+   `claude plugin marketplace add ./` and `claude plugin install <name>@dev-digest-ai-marketplace`.
 
 Conventions:
 

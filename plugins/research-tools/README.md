@@ -15,7 +15,7 @@ Two modes, which can be combined in one report:
 
 ```bash
 /plugin marketplace add aptrnk1/dev-digest-ai-marketplace
-/plugin install research-tools@dev-digest
+/plugin install research-tools@dev-digest-ai-marketplace
 ```
 
 No dependencies. The plugin is also installed automatically as a dependency of `sdd-engineering`.
