@@ -1,0 +1,30 @@
+{
+  "name": "dev-digest-catalog-site",
+  "private": true,
+  "type": "module",
+  "description": "Static search catalog for the dev-digest Claude Code plugin marketplace (GitHub Pages)",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "build:fixtures": "node scripts/build.mjs --root test/fixtures/marketplace --out dist-fixtures --repo fixture-owner/fixture-repo --sha 0123456789abcdef0123456789abcdef01234567 --synonyms test/fixtures/synonyms.json --build-time 2026-10-25T12:34:00Z",
+    "serve": "node scripts/serve.mjs dist 4322",
+    "test": "node --test \"test/unit/*.test.mjs\" \"test/it/*.test.mjs\"",
+    "test:unit": "node --test \"test/unit/*.test.mjs\"",
+    "test:it": "node --test \"test/it/*.test.mjs\"",
+    "test:e2e": "npm run build:fixtures && playwright test"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@fontsource/ibm-plex-sans": "5.3.0",
+    "marked": "18.1.1",
+    "sanitize-html": "2.18.1",
+    "yaml": "2.9.1"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.64.1"
+  }
+}

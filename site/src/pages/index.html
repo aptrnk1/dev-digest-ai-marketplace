@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="{{t:site.lang}}">
+<head>
+{{> head}}
+<title>{{t:page.home.title}}</title>
+</head>
+<body data-page="home">
+{{> header}}
+<main id="main">
+  <div data-view="home" class="page">
+    <section class="hero">
+      <div class="eyebrow">{{t:home.eyebrow}}</div>
+      <h1>{{t:home.title}}</h1>
+      <p class="hero-lede">{{t:home.lede}}</p>
+      <form class="hero-search" role="search" data-hero-search>
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input type="search" name="q" autocomplete="off" placeholder="{{t:home.heroPlaceholder}}" aria-label="{{t:header.searchAria}}">
+      </form>
+      <div class="chips" data-home-tags aria-label="{{t:home.tagsAria}}"></div>
+    </section>
+    <div data-home-content></div>
+  </div>
+
+  <div data-view="results" class="page results-layout" hidden>
+    <aside class="filters" id="filters" data-filters aria-label="{{t:filters.title}}"></aside>
+    <section aria-labelledby="results-heading">
+      <div class="results-head">
+        <div>
+          <h1 id="results-heading" data-results-heading></h1>
+          <div class="results-count" data-results-count aria-live="polite"></div>
+        </div>
+        <button type="button" class="btn btn-sm filters-toggle" data-filters-toggle aria-expanded="false" aria-controls="filters">{{t:filters.toggle}}</button>
+        <label class="sort">{{t:results.sortLabel}}
+          <select data-sort>
+            <option value="relevance">{{t:results.sort.relevance}}</option>
+            <option value="name">{{t:results.sort.name}}</option>
+          </select>
+        </label>
+      </div>
+      <p class="also-searched" data-also-searched hidden></p>
+      <div data-results></div>
+    </section>
+  </div>
+</main>
+{{> footer}}
+<script type="module" src="assets/js/pages/home.js?v={{version}}"></script>
+</body>
+</html>

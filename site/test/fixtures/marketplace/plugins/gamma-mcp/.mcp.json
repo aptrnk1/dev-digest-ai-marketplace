@@ -1,0 +1,6 @@
+{
+  "mcpServers": {
+    "local-db": { "command": "node", "args": ["server.js", "--readonly"], "env": { "DB_PASSWORD": "SECRET-MARKER-123" } },
+    "remote-api": { "type": "http", "url": "https://api.example.com/mcp", "headers": { "Authorization": "Bearer SECRET-MARKER-123" } }
+  }
+}

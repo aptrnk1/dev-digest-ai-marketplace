@@ -1,0 +1,16 @@
+{
+  "name": "alpha-tools",
+  "displayName": "Alpha Tools",
+  "version": "1.2.3",
+  "description": "Refactoring helpers for large codebases",
+  "author": { "name": "Manifest Author" },
+  "license": "MIT",
+  "keywords": ["refactoring", "Code-Quality"],
+  "skills": "./extra-skills",
+  "dependencies": ["beta-review", { "name": "gamma-mcp", "version": "^1.0.0" }, "outside-tool@other-market"],
+  "hooks": {
+    "PostToolUse": [
+      { "matcher": "Write", "hooks": [{ "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/alpha-cli format", "env": { "ALPHA_TOKEN": "SECRET-MARKER-123" } }] }
+    ]
+  }
+}

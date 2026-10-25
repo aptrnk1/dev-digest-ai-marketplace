@@ -1,0 +1,11 @@
+{
+  "name": "fixture-market",
+  "owner": { "name": "fixture-owner" },
+  "plugins": [
+    { "name": "alpha-tools", "source": "./plugins/alpha-tools", "category": "engineering", "tags": ["Refactoring"], "author": { "name": "Alpha Team" } },
+    { "name": "beta-review", "source": "./plugins/beta-review", "category": "review", "displayName": "Beta Review" },
+    { "name": "gamma-mcp", "source": "./plugins/gamma-mcp", "category": "data" },
+    { "name": "hello", "source": "./plugins/hello", "category": "examples" },
+    { "name": "external-plugin", "source": { "source": "github", "repo": "someone/external-plugin" }, "description": "Hosted elsewhere", "version": "2.0.0" }
+  ]
+}
