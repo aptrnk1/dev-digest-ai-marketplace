@@ -8,7 +8,7 @@ test.describe('plugin page', () => {
     await expect(page.locator('.version-badge')).toHaveText('v1.2.3');
     await expect(page.locator('.detail-meta')).toContainText('Категорія: engineering');
     await expect(page.locator('.detail-meta')).toContainText('Ліцензія: MIT');
-    await expect(page.locator('.terminal pre').first()).toHaveText('/plugin marketplace add fixture-owner/fixture-repo\n/plugin install alpha-tools@fixture-market');
+    await expect(page.locator('.terminal pre').first()).toHaveText('claude plugin marketplace add fixture-owner/fixture-repo && claude plugin install alpha-tools@fixture-market');
     await expect(page.getByRole('link', { name: 'View on GitHub ↗' })).toHaveAttribute('href', /tree\/0123456789abcdef0123456789abcdef01234567\/plugins\/alpha-tools$/);
     await expect(page.locator('.comp-group-title')).toHaveText(['скіли', 'агенти', 'команди', 'hooks']);
     await expect(page.locator('.comp', { hasText: 'security' })).toContainText('@agent-alpha-tools:review:security');
@@ -86,7 +86,7 @@ test('getting started shows three baked-in commands (AC83)', async ({ page }) =>
 });
 
 test.describe('copy', () => {
-  test('Copy install copies two lines, shows label and toast (AC40)', async ({ page, browserName, context }) => {
+  test('Copy install copies one shell line, shows label and toast (AC40)', async ({ page, browserName, context }) => {
     test.skip(browserName !== 'chromium', 'clipboard permissions are Chromium-only in Playwright');
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     await page.goto('plugin.html?name=hello');
@@ -96,7 +96,7 @@ test.describe('copy', () => {
     await expect(button).toHaveText('Скопійовано ✓');
     await expect(page.locator('.toast')).toHaveText('✓ Скопійовано в буфер');
     expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
-      '/plugin marketplace add fixture-owner/fixture-repo\n/plugin install hello@fixture-market',
+      'claude plugin marketplace add fixture-owner/fixture-repo && claude plugin install hello@fixture-market',
     );
     await expect(button).toHaveText('Copy install', { timeout: 3000 });
   });

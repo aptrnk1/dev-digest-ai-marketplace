@@ -8,8 +8,9 @@ export const artifactHref = (a) =>
     ? pluginHref(a.name)
     : `artifact.html?plugin=${encodeURIComponent(a.plugin)}&type=${encodeURIComponent(a.type)}&name=${encodeURIComponent(a.name)}`;
 
+// One shell line: Claude Code's prompt reads a multi-line paste as a single slash command.
 export const installText = (build, plugin) =>
-  `/plugin marketplace add ${build.repo}\n/plugin install ${plugin}@${build.marketplace}`;
+  `claude plugin marketplace add ${build.repo} && claude plugin install ${plugin}@${build.marketplace}`;
 
 export const repoUrl = (build) => `https://github.com/${build.repo}`;
 
