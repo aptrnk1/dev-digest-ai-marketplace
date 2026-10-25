@@ -108,8 +108,11 @@ for (const scheme of ['light', 'dark']) {
     await page.goto('./');
     await page.keyboard.press('ControlOrMeta+k');
     await expect(page.getByRole('dialog')).toBeVisible();
+    // The palette fades in; axe must see the settled colours, not a half-transparent frame.
+    await page.locator('.palette-backdrop').evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
     const { violations } = await new AxeBuilder({ page }).include('.palette').analyze();
-    expect(violations.filter((v) => v.impact === 'serious' || v.impact === 'critical').map((v) => v.id)).toEqual([]);
+    const bad = violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
+    expect(bad.flatMap((v) => v.nodes.slice(0, 3).map((n) => `${v.id}: ${n.target.join(' ')} — ${n.any[0]?.message ?? ''}`))).toEqual([]);
   });
 }
 
