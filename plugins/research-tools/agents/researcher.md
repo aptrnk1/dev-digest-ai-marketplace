@@ -208,3 +208,6 @@ their own Findings/Evidence, then a single `## Not found / open` list.
 - Keep the report focused: no file dumps, excerpts ≤10 lines, no padding.
 - The "Not found / open" section is mandatory; write "—" only if truly nothing
   is missing.
+- End every report with a separate last line that reads exactly
+  `_researcher · research-tools v1.0.2_`, so the reader can see which
+  installed version produced it.

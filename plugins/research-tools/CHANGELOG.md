@@ -4,6 +4,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versions follo
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-10-25
+
+### Changed
+- Every report ends with a version footer (`_researcher · research-tools v1.0.2_`),
+  used to check that auto-update delivered the new release.
+
 ## [1.0.1] - 2026-10-25
 
 ### Changed
