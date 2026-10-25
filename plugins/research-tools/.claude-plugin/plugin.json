@@ -1,0 +1,17 @@
+{
+  "name": "research-tools",
+  "displayName": "Research Tools",
+  "version": "1.0.0",
+  "description": "Read-only researcher agent: answers a concrete question from the codebase or the web with cited evidence",
+  "author": {
+    "name": "aptrnk1"
+  },
+  "homepage": "https://github.com/aptrnk1/dev-digest-ai-marketplace/tree/main/plugins/research-tools",
+  "repository": "https://github.com/aptrnk1/dev-digest-ai-marketplace",
+  "license": "MIT",
+  "keywords": [
+    "research",
+    "agent",
+    "read-only"
+  ]
+}
