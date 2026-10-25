@@ -1,0 +1,1 @@
+{ "gamma-lsp": { "command": "gamma-lsp", "args": ["--stdio"], "env": { "LSP_KEY": "SECRET-MARKER-123" } } }

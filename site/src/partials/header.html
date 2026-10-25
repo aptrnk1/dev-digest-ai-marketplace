@@ -1,0 +1,17 @@
+<header class="site-header">
+  <a class="logo" href="./" aria-label="{{t:header.homeAria}}">
+    <span class="logo-mark" aria-hidden="true">{{t:header.logo}}</span>
+    <span class="logo-label">{{t:header.logoLabel}}</span>
+    <span class="logo-brand">{{t:header.brand}}</span>
+  </a>
+  <form class="header-search" role="search" data-header-search>
+    <span class="search-icon" aria-hidden="true">⌕</span>
+    <input type="search" name="q" autocomplete="off" placeholder="{{t:header.searchPlaceholder}}" aria-label="{{t:header.searchAria}}">
+  </form>
+  <div class="header-actions">
+    <button type="button" class="icon-btn" data-palette-open aria-label="{{t:header.paletteAria}}" aria-haspopup="dialog">{{t:header.paletteButton}}</button>
+    <button type="button" class="icon-btn" data-theme-toggle aria-label="{{t:header.themeToLight}}"></button>
+    <a class="header-link" href="getting-started.html">{{t:header.gettingStarted}}</a>
+    <a class="header-link header-link-secondary" href="{{repoUrl}}" target="_blank" rel="noopener noreferrer">{{t:header.github}}</a>
+  </div>
+</header>

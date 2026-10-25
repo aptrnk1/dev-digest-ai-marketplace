@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="{{t:site.lang}}">
+<head>
+{{> head}}
+<title>{{t:page.gettingStarted.title}}</title>
+</head>
+<body data-page="getting-started">
+{{> header}}
+<main id="main" class="page page-gs">
+  <a class="btn-link" href="./">{{t:common.backHome}}</a>
+  <h1>{{t:gs.title}}</h1>
+  <p class="dim">{{t:gs.lede}}</p>
+  <ol class="steps">
+    <li class="step">
+      <div class="step-n" aria-hidden="true">1</div>
+      <div class="step-body">
+        <h2>{{t:gs.step1.title}}</h2>
+        <p>{{t:gs.step1.desc}}</p>
+        <div class="terminal"><span class="prompt" aria-hidden="true">{{t:common.prompt}}</span><pre data-copy-source>/plugin marketplace add {{repo}}</pre><button type="button" class="btn-link" data-copy>{{t:common.copy}}</button></div>
+      </div>
+    </li>
+    <li class="step">
+      <div class="step-n" aria-hidden="true">2</div>
+      <div class="step-body">
+        <h2>{{t:gs.step2.title}}</h2>
+        <p>{{t:gs.step2.desc}}</p>
+        <div class="terminal"><span class="prompt" aria-hidden="true">{{t:common.prompt}}</span><pre data-copy-source>/plugin install {{firstPlugin}}@{{marketplace}}</pre><button type="button" class="btn-link" data-copy>{{t:common.copy}}</button></div>
+      </div>
+    </li>
+    <li class="step">
+      <div class="step-n" aria-hidden="true">3</div>
+      <div class="step-body">
+        <h2>{{t:gs.step3.title}}</h2>
+        <p>{{t:gs.step3.desc}}</p>
+        <div class="terminal"><span class="prompt" aria-hidden="true">{{t:common.prompt}}</span><pre data-copy-source>/plugin marketplace update {{marketplace}}</pre><button type="button" class="btn-link" data-copy>{{t:common.copy}}</button></div>
+      </div>
+    </li>
+  </ol>
+  <div class="note"><strong>{{t:gs.noteStrong}}</strong> {{t:gs.note}}</div>
+</main>
+{{> footer}}
+<script type="module" src="assets/js/pages/getting-started.js?v={{version}}"></script>
+</body>
+</html>
