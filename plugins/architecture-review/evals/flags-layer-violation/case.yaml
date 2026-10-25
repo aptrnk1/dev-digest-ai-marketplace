@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: flags-layer-violation
+description: Reviewer flags a service that imports the database client and a concrete repository, quotes the line, and edits nothing.
+tags: [smoke]
+plugins: ["../..", "../../../engineering-paved-path"]
+context:
+  scaffold_script: fixture.sh

@@ -1,0 +1,24 @@
+{
+  "name": "architecture-review",
+  "displayName": "Architecture Review",
+  "version": "1.0.0",
+  "description": "Read-only architecture reviewer agent: layers, dependency direction, module boundaries",
+  "author": {
+    "name": "aptrnk1"
+  },
+  "homepage": "https://github.com/aptrnk1/dev-digest-ai-marketplace/tree/main/plugins/architecture-review",
+  "repository": "https://github.com/aptrnk1/dev-digest-ai-marketplace",
+  "license": "MIT",
+  "keywords": [
+    "architecture",
+    "review",
+    "agent",
+    "read-only"
+  ],
+  "dependencies": [
+    {
+      "name": "engineering-paved-path",
+      "version": "^1.0.0"
+    }
+  ]
+}

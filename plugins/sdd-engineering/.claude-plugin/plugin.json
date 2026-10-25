@@ -1,0 +1,47 @@
+{
+  "name": "sdd-engineering",
+  "displayName": "SDD Engineering",
+  "version": "1.0.0",
+  "description": "Spec Driven Development pipeline: spec, implementation plan, run-plan, verification and workflow retro",
+  "author": {
+    "name": "aptrnk1"
+  },
+  "homepage": "https://github.com/aptrnk1/dev-digest-ai-marketplace/tree/main/plugins/sdd-engineering",
+  "repository": "https://github.com/aptrnk1/dev-digest-ai-marketplace",
+  "license": "MIT",
+  "keywords": [
+    "sdd",
+    "spec",
+    "planning",
+    "tdd",
+    "agents"
+  ],
+  "dependencies": [
+    {
+      "name": "engineering-paved-path",
+      "version": "^1.0.0"
+    },
+    {
+      "name": "research-tools",
+      "version": "^1.0.0"
+    },
+    {
+      "name": "architecture-review",
+      "version": "^1.0.0"
+    }
+  ],
+  "userConfig": {
+    "specs_dir": {
+      "type": "string",
+      "title": "Specs directory",
+      "description": "Where spec-creator writes cross-module specs and where the guard hook allows it to write. Relative to the repo root.",
+      "default": "specs/"
+    },
+    "plans_dir": {
+      "type": "string",
+      "title": "Plans directory",
+      "description": "Where implementation-planner writes plans and where the guard hook allows it to write. Relative to the repo root.",
+      "default": "specs/plans/"
+    }
+  }
+}

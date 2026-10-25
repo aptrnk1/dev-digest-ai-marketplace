@@ -11,6 +11,72 @@
       "source": "./plugins/hello",
       "description": "Example plugin: a greeting skill that shows the marketplace layout",
       "category": "examples"
+    },
+    {
+      "name": "engineering-paved-path",
+      "source": "./plugins/engineering-paved-path",
+      "version": "1.0.0",
+      "description": "Stack skills for React, Next.js, Fastify, onion architecture, React Testing Library and web security",
+      "author": {
+        "name": "aptrnk1"
+      },
+      "category": "engineering",
+      "keywords": [
+        "react",
+        "nextjs",
+        "fastify",
+        "architecture",
+        "testing",
+        "security"
+      ]
+    },
+    {
+      "name": "research-tools",
+      "source": "./plugins/research-tools",
+      "version": "1.0.0",
+      "description": "Read-only researcher agent: answers a concrete question from the codebase or the web with cited evidence",
+      "author": {
+        "name": "aptrnk1"
+      },
+      "category": "engineering",
+      "keywords": [
+        "research",
+        "agent",
+        "read-only"
+      ]
+    },
+    {
+      "name": "architecture-review",
+      "source": "./plugins/architecture-review",
+      "version": "1.0.0",
+      "description": "Read-only architecture reviewer agent: layers, dependency direction, module boundaries",
+      "author": {
+        "name": "aptrnk1"
+      },
+      "category": "engineering",
+      "keywords": [
+        "architecture",
+        "review",
+        "agent",
+        "read-only"
+      ]
+    },
+    {
+      "name": "sdd-engineering",
+      "source": "./plugins/sdd-engineering",
+      "version": "1.0.0",
+      "description": "Spec Driven Development pipeline: spec, implementation plan, run-plan, verification and workflow retro",
+      "author": {
+        "name": "aptrnk1"
+      },
+      "category": "engineering",
+      "keywords": [
+        "sdd",
+        "spec",
+        "planning",
+        "tdd",
+        "agents"
+      ]
     }
   ]
 }

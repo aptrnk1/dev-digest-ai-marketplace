@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: repo-question-cites-evidence
+description: Researcher answers a concrete repo question with file:line evidence and edits nothing.
+tags: [smoke, repo]
+context:
+  scaffold_script: fixture.sh

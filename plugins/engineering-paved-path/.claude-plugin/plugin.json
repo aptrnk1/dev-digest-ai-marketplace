@@ -1,0 +1,20 @@
+{
+  "name": "engineering-paved-path",
+  "displayName": "Engineering Paved Path",
+  "version": "1.0.0",
+  "description": "Stack skills for React, Next.js, Fastify, onion architecture, React Testing Library and web security",
+  "author": {
+    "name": "aptrnk1"
+  },
+  "homepage": "https://github.com/aptrnk1/dev-digest-ai-marketplace/tree/main/plugins/engineering-paved-path",
+  "repository": "https://github.com/aptrnk1/dev-digest-ai-marketplace",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "nextjs",
+    "fastify",
+    "architecture",
+    "testing",
+    "security"
+  ]
+}
