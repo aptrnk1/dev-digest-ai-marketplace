@@ -443,8 +443,10 @@ the repo root (AC9).
 
 ### Copying and invocation (site)
 - **AC40** (event, US3) WHEN the user clicks `Copy install`, the UI shall copy
-  two lines, `/plugin marketplace add <owner>/<repo>` and
-  `/plugin install <plugin>@<marketplace name>` (for this repo:
+  one shell line,
+  `claude plugin marketplace add <owner>/<repo> && claude plugin install <plugin>@<marketplace name>`
+  (a multi-line paste into the Claude Code prompt is read as one slash
+  command, so two `/plugin` lines fail) (for this repo:
   `aptrnk1/dev-digest-ai-marketplace` and `@dev-digest-ai-marketplace`; values come from the
   index). For 2 s the button shows `Скопійовано ✓` (Copied ✓), and a toast
   `✓ Скопійовано в буфер` (✓ Copied to clipboard) is visible at the bottom of
