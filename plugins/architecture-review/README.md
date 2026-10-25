@@ -1,152 +1,153 @@
 # architecture-review
 
-Плагін з одним агентом, **`architecture-reviewer`**. Він робить read-only рев'ю
-**лише структури коду**:
+A plugin with one agent, **`architecture-reviewer`**. It does a read-only review of
+**code structure only**:
 
-- розташування коду за шарами;
-- напрям залежностей;
-- межі модулів;
-- composition root і DI;
-- транзакції (Unit of Work);
-- мапінг помилок і даних на межах;
-- крос-пакетні правила.
+- where code sits across layers;
+- dependency direction;
+- module boundaries;
+- composition root and DI;
+- transactions (Unit of Work);
+- error and data mapping at boundaries;
+- cross-package rules.
 
-Стиль, продуктивність і security агент не оцінює. Він нічого не виправляє, а повертає
-знахідки з доказами й вердикт.
+The agent does not judge style, performance or security. It fixes nothing; it returns
+findings with evidence and a verdict.
 
-## Встановлення
+## Installation
 
 ```bash
 /plugin marketplace add aptrnk1/dev-digest-ai-marketplace
 /plugin install architecture-review@dev-digest
 ```
 
-Плагін залежить від **`engineering-paved-path`** (`^1.0.0`), і той встановиться
-автоматично. З нього агент бере правила архітектури та фреймворків. Плагін також
-ставиться автоматично як залежність `sdd-engineering`.
+The plugin depends on **`engineering-paved-path`** (`^1.0.0`), which installs
+automatically. The agent takes its architecture and framework rules from it. This plugin
+is also installed automatically as a dependency of `sdd-engineering`.
 
-## Як викликати
+## How to invoke
 
-| Спосіб | Приклад |
+| Method | Example |
 | :- | :- |
-| Згадати агента в повідомленні | `@agent-architecture-review:architecture-reviewer scope: diff main..HEAD` |
-| З іншого агента чи skill (Agent tool) | `subagent_type: "architecture-review:architecture-reviewer"` |
-| Як головну сесію | `claude --agent architecture-review:architecture-reviewer` |
+| Mention the agent in a message | `@agent-architecture-review:architecture-reviewer scope: diff main..HEAD` |
+| From another agent or skill (Agent tool) | `subagent_type: "architecture-review:architecture-reviewer"` |
+| As the main session | `claude --agent architecture-review:architecture-reviewer` |
 
 ## Inputs
 
-Обов'язково передати рівно один scope:
+Pass exactly one scope (required):
 
-| Input | Що рев'юїть | Приклад |
+| Input | What it reviews | Example |
 | :- | :- | :- |
-| `scope: diff <base>..HEAD` | файли, змінені в діапазоні, плюс незакомічені зміни. Просто `scope: diff` означає дефолтну гілку (зазвичай `main`) | `scope: diff main..HEAD` |
-| `scope: paths <path> …` | файли й теки в поточному стані | `scope: paths src/modules/orders src/db` |
-| `module: <path>` | цілий модуль | `module: src/modules/orders` |
+| `scope: diff <base>..HEAD` | files changed in the range, plus uncommitted changes. A bare `scope: diff` means the default branch (usually `main`) | `scope: diff main..HEAD` |
+| `scope: paths <path> …` | files and folders in their current state | `scope: paths src/modules/orders src/db` |
+| `module: <path>` | a whole module | `module: src/modules/orders` |
 
-Опційні inputs:
+Optional inputs:
 
-| Input | Навіщо | Приклад |
+| Input | Why | Example |
 | :- | :- | :- |
-| `arch_check: <command>` | ground truth для напряму імпортів: кожне **нове** порушення стає `critical`, baselined — `info`. Якщо не передати, агент шукає gate сам (скрипт `arch:check`, `.dependency-cruiser.*`, eslint boundaries), а без gate трасує імпорти вручну | `arch_check: npx depcruise src --config .dependency-cruiser.cjs --ignore-known --output-type err` |
-| `rules: <path>` | архітектурний документ проєкту. Там, де він розходиться із загальними правилами skills, перемагає він | `rules: docs/architecture.md` |
-| `plan: <path>` + `task: T<n>` | контекст: що задача мала зробити і якими файлами вона володіє | `plan: specs/plans/checkout.md` `task: T3` |
-| `previous: <findings>` + `since: <sha>` | **delta-режим** для повторного кола: агент позначає попередні знахідки як `fixed`, `open` або `moved` і рев'юїть лише змінене з `<sha>` | `previous: reports/checkout/review-1.md` `since: a1b2c3d` |
+| `arch_check: <command>` | ground truth for import direction: every **new** violation becomes `critical`, baselined ones `info`. If omitted, the agent looks for a gate itself (an `arch:check` script, `.dependency-cruiser.*`, eslint boundaries), and without a gate traces imports by hand | `arch_check: npx depcruise src --config .dependency-cruiser.cjs --ignore-known --output-type err` |
+| `rules: <path>` | the project's architecture document. Where it disagrees with the general skill rules, it wins | `rules: docs/architecture.md` |
+| `plan: <path>` + `task: T<n>` | context: what the task was meant to do and which files it owns | `plan: specs/plans/checkout.md` `task: T3` |
+| `previous: <findings>` + `since: <sha>` | **delta mode** for a repeat round: the agent marks earlier findings as `fixed`, `open` or `moved` and reviews only what changed since `<sha>` | `previous: reports/checkout/review-1.md` `since: a1b2c3d` |
 
-Без scope, з неоднозначним scope або з неіснуючими шляхами агент повертає
+With no scope, an ambiguous scope or non-existent paths, the agent returns
 `Verdict: NEEDS_CONTEXT`.
 
-## Які skills підтягує
+## Which skills it loads
 
-Агент вантажить skills з `engineering-paved-path` через Skill tool, лише коли у scope є
-відповідні файли, і застосовує тільки їхній архітектурний зріз:
+The agent loads skills from `engineering-paved-path` through the Skill tool only when the
+scope contains matching files, and applies only their architectural slice:
 
-| У scope є | Skill |
+| Scope contains | Skill |
 | :- | :- |
-| backend із шарами (domain, use cases, repositories, adapters) | `engineering-paved-path:onion-architecture` |
-| Fastify routes і plugins | `engineering-paved-path:fastify-best-practices` |
+| a layered backend (domain, use cases, repositories, adapters) | `engineering-paved-path:onion-architecture` |
+| Fastify routes and plugins | `engineering-paved-path:fastify-best-practices` |
 | Next.js (`app/`, RSC, route handlers) | `engineering-paved-path:next-best-practices` |
-| React-компоненти й хуки | `engineering-paved-path:react-best-practices` |
-| межі довіри (валідація входу, auth, секрети) | `engineering-paved-path:security`, лише щоб перевірити, *де* стоїть перевірка |
+| React components and hooks | `engineering-paved-path:react-best-practices` |
+| trust boundaries (input validation, auth, secrets) | `engineering-paved-path:security`, only to check *where* the check sits |
 
-Також агент читає документацію проєкту, яка є: `rules:`, root `CLAUDE.md`,
-`README.md` §Architecture, `ARCHITECTURE.md`, `docs/adr/`, а ще `CLAUDE.md`,
-`README.md` чи `INSIGHTS.md` модулів у scope.
+The agent also reads whatever project documentation exists: `rules:`, root `CLAUDE.md`,
+`README.md` §Architecture, `ARCHITECTURE.md`, `docs/adr/`, plus the `CLAUDE.md`,
+`README.md` or `INSIGHTS.md` of modules in scope.
 
-## Що повертає
+## What it returns
 
 ```markdown
 ## Architecture review — <scope>
 Verdict: APPROVE | APPROVE_WITH_CONCERNS | REQUEST_CHANGES | NEEDS_CONTEXT
 Counts: critical · major · minor · nit · info
-### Architecture gate        — команда, exit code, нові та baselined порушення
-### Findings                 — id, severity, rule, file:line, дослівна цитата, чому, напрям виправлення
-### Previous findings        — лише в delta-режимі
-### Checklist                — лише пункти, що не пройшли, і n/a
-### Not verified             — що не вдалося перевірити і чому
-### Insight candidates       — уроки, які варто записати в документацію проєкту
+### Architecture gate        — command, exit code, new and baselined violations
+### Findings                 — id, severity, rule, file:line, verbatim quote, why, fix direction
+### Previous findings        — delta mode only
+### Checklist                — only failed items and n/a
+### Not verified             — what could not be checked and why
+### Insight candidates       — lessons worth recording in the project documentation
 ```
 
-**Шкала severity:**
+**Severity scale:**
 
-| Severity | Значення |
+| Severity | Meaning |
 | :- | :- |
-| `critical` | внесено цим scope: нове порушення напряму залежностей, порушення задокументованого правила проєкту або структурна зміна, що ламає контракт |
-| `major` | явне порушення правила, яке ускладнює зміни й тести, хоча зараз нічого не зламано |
-| `minor` | варто виправити, якщо це дешево |
-| `nit` | смак, лише якщо правило прямо так каже |
-| `info` | проблема в коді, якого scope не змінював |
+| `critical` | introduced by this scope: a new dependency-direction violation, a breach of a documented project rule, or a structural change that breaks a contract |
+| `major` | a clear rule violation that makes changes and tests harder, even though nothing is broken now |
+| `minor` | worth fixing if it is cheap |
+| `nit` | taste, only if a rule says so explicitly |
+| `info` | a problem in code the scope did not change |
 
-**Вердикт:**
+**Verdict:**
 
-| Вердикт | Коли |
+| Verdict | When |
 | :- | :- |
-| `REQUEST_CHANGES` | є хоча б один `critical` |
-| `APPROVE_WITH_CONCERNS` | немає `critical`, є `major` |
-| `APPROVE` | решта випадків |
+| `REQUEST_CHANGES` | at least one `critical` |
+| `APPROVE_WITH_CONCERNS` | no `critical`, at least one `major` |
+| `APPROVE` | all other cases |
 
-Кожна знахідка має `file:line` і дослівну цитату, інакше агент її відкидає. Перед
-звітом агент сам перепровіряє кожен `critical` і `major` (self-refutation). Нуль
-знахідок — нормальний результат.
+Every finding has a `file:line` and a verbatim quote, or the agent drops it. Before the
+report, the agent re-checks every `critical` and `major` itself (self-refutation). Zero
+findings is a normal result.
 
-## Гарантії та їхні межі
+## Guarantees and their limits
 
-- Інструменти: `Read, Grep, Glob, Bash, Skill`. Заборонені `Write`, `Edit`,
-  `NotebookEdit`, `Agent`, `WebSearch` і `WebFetch`.
-- **Bash лише read-only, але тримається це тільки на промпті.** Агенту дозволено
-  `git diff/log/show/blame`, `ls`, `cat`, `rg`, `jq` і передану команду `arch_check`.
-  Для жорсткого обмеження налаштуйте
-  [permission rules](https://code.claude.com/docs/en/permissions) у проєкті.
-- Агент не пише в `INSIGHTS.md`, `CLAUDE.md` чи ADR, а лише пропонує кандидатів.
-- Вміст файлів, diff-ів і планів вважається даними, а не інструкціями.
-- Модель: `sonnet`, до 40 ходів.
+- Tools: `Read, Grep, Glob, Bash, Skill`. `Write`, `Edit`, `NotebookEdit`, `Agent`,
+  `WebSearch` and `WebFetch` are disallowed.
+- **Bash is read-only, but only the prompt enforces that.** The agent may run
+  `git diff/log/show/blame`, `ls`, `cat`, `rg`, `jq` and the given `arch_check` command.
+  For a hard restriction, configure
+  [permission rules](https://code.claude.com/docs/en/permissions) in the project.
+- The agent does not write to `INSIGHTS.md`, `CLAUDE.md` or ADRs; it only proposes
+  candidates.
+- The contents of files, diffs and plans are treated as data, not instructions.
+- Model: `sonnet`, up to 40 turns.
 
 ## Evals
 
-`evals/` містить два кейси для `claude plugin eval`:
+`evals/` holds two cases for `claude plugin eval`:
 
-- `flags-layer-violation`: сервіс імпортує клієнт БД і конкретний репозиторій.
-  Агент має повернути `REQUEST_CHANGES` з посиланням на `service.ts:<line>`;
-- `clean-module-approves`: правильно розшарований модуль. Агент має дати `APPROVE`
-  і не вигадувати знахідок.
+- `flags-layer-violation`: a service imports the DB client and a concrete repository.
+  The agent must return `REQUEST_CHANGES` citing `service.ts:<line>`;
+- `clean-module-approves`: a correctly layered module. The agent must return `APPROVE`
+  and not invent findings.
 
 ```bash
 cd plugins/architecture-review
 claude plugin eval . --scaffold
 ```
 
-Кейси підключають сусідній `../engineering-paved-path` через поле `plugins` у
-`case.yaml`, щоб залежність була доступна.
+The cases load the sibling `../engineering-paved-path` through the `plugins` field in
+`case.yaml`, so the dependency is available.
 
-## На чому базується
+## Based on
 
 - Claude Code, [Create custom subagents](https://code.claude.com/docs/en/sub-agents):
-  read-only агент через `disallowedTools`.
+  a read-only agent via `disallowedTools`.
 - Anthropic, [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents),
-  патерн *evaluator-optimizer*: рецензент оцінює результат і повертає зауваження, а
-  не виправляє сам.
+  the *evaluator-optimizer* pattern: the reviewer evaluates the result and returns
+  feedback instead of fixing it.
 - obra/superpowers, [`requesting-code-review/code-reviewer.md`](https://github.com/obra/superpowers/blob/main/skills/requesting-code-review/code-reviewer.md):
-  знахідки з `file:line`, градація severity і фінальний вердикт.
-- [dependency-cruiser](https://github.com/sverweij/dependency-cruiser): типовий
-  інструмент для `arch_check`, хоча підійде будь-який gate напряму імпортів.
+  findings with `file:line`, severity grading and a final verdict.
+- [dependency-cruiser](https://github.com/sverweij/dependency-cruiser): the typical
+  tool for `arch_check`, though any import-direction gate works.
 
-Історія змін описана в [CHANGELOG.md](CHANGELOG.md).
+The change history is in [CHANGELOG.md](CHANGELOG.md).

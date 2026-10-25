@@ -1,20 +1,25 @@
 # Changelog
 
-Формат: [Keep a Changelog](https://keepachangelog.com/uk/1.1.0/), версії за [SemVer](https://semver.org/lang/uk/).
+Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
+
+## [1.0.1] - 2026-10-25
+
+### Changed
+- Documentation translated to English.
 
 ## [1.0.0] - 2026-10-25
 
 ### Added
-- Агент `researcher`: read-only дослідження у двох режимах. Режим repo дає докази
-  `file:line` і з git, режим external — URL, тип і дату джерела. Є interview mode
-  (`AskUserQuestion` або блок `needs-input`) і звіт фіксованої структури з
-  обов'язковою секцією «Not found / open».
-- Evals `repo-question-cites-evidence` і `vague-question-asks-first` для `claude plugin eval`.
+- Agent `researcher`: read-only research in two modes. Repo mode gives `file:line`
+  and git evidence, external mode gives the source URL, type and date. It has an
+  interview mode (`AskUserQuestion` or a `needs-input` block) and a fixed-structure
+  report with a mandatory "Not found / open" section.
+- Evals `repo-question-cites-evidence` and `vague-question-asks-first` for `claude plugin eval`.
 
-### Походження
-- Перенесено з `.claude/agents/researcher.md` репозиторію dev-digest (MIT © 2026 Ivan Lapa).
-  Прибрано карту конкретного репо (модулі, стек, локальні нюанси); замість неї агент
-  орієнтується за документацією поточного репозиторію. Правило «досліджувати версію з
-  маніфесту/lockfile» узагальнено на різні екосистеми.
+### Origin
+- Ported from `.claude/agents/researcher.md` in the dev-digest repository (MIT © 2026 Ivan Lapa).
+  Removed the map of that specific repo (modules, stack, local quirks); instead the agent
+  orients itself by the current repository's documentation. The rule "research the version
+  from the manifest/lockfile" was generalized to other ecosystems.

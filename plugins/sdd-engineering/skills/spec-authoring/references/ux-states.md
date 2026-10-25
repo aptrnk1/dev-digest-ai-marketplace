@@ -8,80 +8,80 @@ or an AC.
 
 For every screen / panel / modal in the feature, fill:
 
-| Екран | ideal | empty | loading | partial | error | AC |
+| Screen | ideal | empty | loading | partial | error | AC |
 |---|---|---|---|---|---|---|
 
-- **ideal** — що на макеті; звідки береться кожне значення (ендпоінт/контракт).
-- **empty** — перший запуск, нічого не знайдено, фільтр нічого не дав; є
-  CTA, що робити далі.
-- **loading** — перше завантаження (skeleton) vs фонове оновлення (дані
-  лишаються видимими); довгі операції — прогрес і можливість піти зі сторінки.
-- **partial** — частина даних є (LLM повернув частину, один із запитів упав,
-  пагінація, обрізаний вміст).
-- **error** — API недоступний, 4xx з кодом (`409 …`), 5xx, timeout або відмова
-  зовнішнього сервісу, rate limit, немає ключа / доступу, незавершене
-  налаштування.
+- **ideal** — what the design shows; where every value comes from (endpoint/contract).
+- **empty** — first run, nothing found, a filter returned nothing; there is a
+  CTA for what to do next.
+- **loading** — first load (skeleton) vs background refresh (data stays
+  visible); long operations show progress and let the user leave the page.
+- **partial** — some data is there (the LLM returned part, one of the requests failed,
+  pagination, truncated content).
+- **error** — API unavailable, 4xx with a code (`409 …`), 5xx, timeout or an
+  external service refusing, rate limit, no key / access, unfinished
+  setup.
 
-Клітинка без відповіді → Open question або питання в інтерв'ю.
+A cell without an answer → an Open question or an interview question.
 
 ## 2. Edge data
 
-- дуже довгі назви / шляхи / тексти (обрізання + tooltip/повний вигляд);
-- 0, 1, багато (> 100) елементів; пагінація або віртуалізація;
-- спецсимволи, emoji, RTL, markdown/HTML у даних (екранування!);
-- застарілі дані (інша вкладка змінила), видалений об'єкт, на який є посилання;
-- різні акаунти / workspace / проєкти; перемикання контексту на сторінці.
+- very long names / paths / texts (truncation + tooltip/full view);
+- 0, 1, many (> 100) items; pagination or virtualisation;
+- special characters, emoji, RTL, markdown/HTML in data (escaping!);
+- stale data (another tab changed it), a deleted object that is still referenced;
+- different accounts / workspaces / projects; switching context on the page.
 
 ## 3. Interaction gaps
 
-- скасування довгої операції; що при уході зі сторінки посеред неї;
-- підтвердження деструктивних дій або Undo (подивись, що вже прийнято в
-  продукті, і тримайся цього);
-- подвійний клік / повторний сабміт (кнопка disabled, ідемпотентність);
-- disabled-стан завжди з причиною (tooltip);
-- успіх: що змінюється на екрані, toast, куди переходить фокус;
-- deep link: чи стан (фільтр, вкладка, вибраний елемент) живе в URL;
-- клавіатура: шорткати, Esc закриває модалку, Enter сабмітить.
+- cancelling a long operation; what happens when the user leaves mid-way;
+- confirmation of destructive actions or Undo (look at what the product
+  already does and stick to it);
+- double click / repeated submit (disabled button, idempotency);
+- a disabled state always comes with a reason (tooltip);
+- success: what changes on screen, toast, where focus goes;
+- deep link: does state (filter, tab, selected item) live in the URL;
+- keyboard: shortcuts, Esc closes a modal, Enter submits.
 
 ## 4. Nielsen's 10 heuristics (short)
 
-1. Видимість стану системи. 2. Відповідність реальному світу (терміни юзера).
-3. Контроль і свобода (Undo, Cancel). 4. Узгодженість зі стандартами (як
-інші сторінки продукту). 5. Запобігання помилкам. 6. Розпізнавання замість
-запам'ятовування. 7. Гнучкість (шорткати, bulk-дії). 8. Мінімалізм.
-9. Зрозумілі повідомлення про помилки (що сталося + що робити). 10. Довідка
-в контексті.
+1. Visibility of system status. 2. Match with the real world (the user's terms).
+3. User control and freedom (Undo, Cancel). 4. Consistency and standards (like
+other pages of the product). 5. Error prevention. 6. Recognition rather than
+recall. 7. Flexibility (shortcuts, bulk actions). 8. Minimalism.
+9. Clear error messages (what happened + what to do). 10. Help
+in context.
 
-Використовуй як лінзу для UX-пропозицій (REC), не як чекліст у спеці.
+Use them as a lens for UX proposals (REC), not as a checklist in the spec.
 
 ## 5. Accessibility — WCAG 2.2 AA essentials
 
-- кожен інтерактивний елемент досяжний з клавіатури, видимий фокус;
-- модалка: focus trap, повернення фокусу, Esc;
-- контраст тексту ≥ 4.5:1 (великий ≥ 3:1); стан не передається лише кольором
-  (бейджі severity/status мають текст);
-- поля мають label; помилки валідації пов'язані з полем;
-- динамічні оновлення (прогрес, toast) — `aria-live`;
+- every interactive element is reachable by keyboard, with visible focus;
+- modal: focus trap, focus return, Esc;
+- text contrast ≥ 4.5:1 (large ≥ 3:1); state is not conveyed by colour alone
+  (severity/status badges have text);
+- fields have labels; validation errors are tied to the field;
+- dynamic updates (progress, toast) use `aria-live`;
 - target size ≥ 24×24 px.
 
-Ці вимоги йдуть у спеку як NFR (a11y), а особливі випадки — як AC.
+These go into the spec as NFRs (a11y), and special cases as ACs.
 
 ## 6. Project conventions (check before proposing new UI)
 
-Перед тим як пропонувати новий UI, знайди в репо:
+Before proposing new UI, find in the repo:
 
-- **бібліотеку компонентів / design system** (спільна папка UI-кіту, пакет
-  дизайн-системи) — спершу переюзати, потім нове;
-- **навігацію** (sidebar, routes, шорткати) — куди вписується нова сторінка;
-- **каталог рядків / i18n** — жодного хардкоду; новий текст у спеці = новий
-  ключ у каталозі;
-- **патерн даних** — як інші сторінки ходять по дані (query-бібліотека,
-  polling статусу для фонових задач: 202 → poll → done/failed);
-- **найближчу схожу сторінку** — назви її в спеці як еталон узгодженості.
+- **the component library / design system** (a shared UI kit folder, a design
+  system package) — reuse first, build new second;
+- **navigation** (sidebar, routes, shortcuts) — where the new page fits;
+- **the string catalog / i18n** — no hardcoding; new text in the spec = a new
+  key in the catalog;
+- **the data pattern** — how other pages fetch data (query library,
+  status polling for background jobs: 202 → poll → done/failed);
+- **the closest similar page** — name it in the spec as the consistency reference.
 
 ## 7. Output
 
-- Матриця §1 → розділ «Екрани й стани» спеки.
-- Кожна заповнена клітинка не-ideal → AC (`state` для loading, `unwanted` для
-  error, `event` для взаємодій).
-- Кожна знайдена вада/покращення → питання або REC з однорядковим «чому».
+- The §1 matrix → the spec's "Screens and states" section.
+- Every filled non-ideal cell → an AC (`state` for loading, `unwanted` for
+  error, `event` for interactions).
+- Every flaw/improvement found → a question or a REC with a one-line "why".

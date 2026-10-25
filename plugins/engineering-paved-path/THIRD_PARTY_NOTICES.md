@@ -1,21 +1,21 @@
 # Third-party notices
 
-Звідки взято кожен skill цього плагіна, під якою ліцензією, і що ми змінили.
-Ліцензію перевірено 2026-10-25.
+Where each skill in this plugin comes from, under which license, and what we changed.
+Licenses checked on 2026-10-25.
 
-| Skill | Звідки | Ліцензія | Copyright | Що змінено |
+| Skill | Source | License | Copyright | What changed |
 | :- | :- | :- | :- | :- |
-| `fastify-best-practices` | [mcollina/skills](https://github.com/mcollina/skills), `skills/fastify/` | MIT | © 2026 Matteo Collina | Без змін: `SKILL.md` і `rules/*.md` збігаються з upstream, `tile.json` — метадані upstream |
-| `onion-architecture` | репозиторій dev-digest (skill написав автор цього маркетплейсу) | MIT | © 2026 Ivan Lapa (ліцензія репозиторію) | Узагальнено для будь-якого TS/Node бекенду: прибрано структуру й правила конкретного репо, `drizzle.md` → `persistence.md`, `zod-boundaries.md` → `validation-boundaries.md`, перевірка архітектури стала опційною |
-| `react-best-practices` | репозиторій dev-digest | MIT | © 2026 Ivan Lapa | Без змін за змістом |
-| `react-testing-library` | репозиторій dev-digest | MIT | © 2026 Ivan Lapa | Одне речення в `README.md` переписано нейтрально |
-| `security` | репозиторій dev-digest | MIT | © 2026 Ivan Lapa | Шлях у прикладі `examples.md` зроблено нейтральним; з `references.md` прибрано команду встановлення стороннього skill |
+| `fastify-best-practices` | [mcollina/skills](https://github.com/mcollina/skills), `skills/fastify/` | MIT | © 2026 Matteo Collina | Unchanged: `SKILL.md` and `rules/*.md` match upstream, `tile.json` is upstream metadata |
+| `onion-architecture` | the dev-digest repository (the skill was written by this marketplace's author) | MIT | © 2026 Ivan Lapa (repository license) | Generalized for any TS/Node backend: removed the specific repo's structure and rules, `drizzle.md` → `persistence.md`, `zod-boundaries.md` → `validation-boundaries.md`, the architecture check became optional |
+| `react-best-practices` | the dev-digest repository | MIT | © 2026 Ivan Lapa | Content unchanged |
+| `react-testing-library` | the dev-digest repository | MIT | © 2026 Ivan Lapa | One sentence in `README.md` rewritten neutrally |
+| `security` | the dev-digest repository | MIT | © 2026 Ivan Lapa | The path in an `examples.md` example made neutral; the install command for a third-party skill removed from `references.md` |
 
-`onion-architecture`, `react-best-practices`, `react-testing-library` і `security` написані в dev-digest
-з опорою на публічні джерела. Перелік цих джерел лежить у самих skills
-(`README.md`, `references.md`); це посилання, а не скопійований текст.
+`onion-architecture`, `react-best-practices`, `react-testing-library` and `security` were written in dev-digest
+based on public sources. Those sources are listed in the skills themselves
+(`README.md`, `references.md`); they are references, not copied text.
 
-## Повний текст ліцензій
+## Full license texts
 
 ### MIT — Matteo Collina (`fastify-best-practices`)
 
@@ -69,10 +69,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## Не включено
+## Not included
 
-- `next-best-practices` з [vercel-labs/next-skills](https://github.com/vercel-labs/next-skills)
-  не включено: у репозиторії немає файлу ліцензії ні зараз, ні в історії, тож права
-  на поширення не визначені. Skill `next-best-practices` у цьому плагіні написаний
-  з нуля для цього маркетплейсу (MIT, як і плагін) і не містить тексту з того
-  репозиторію. Він спирається на публічну документацію Next.js і React.
+- `next-best-practices` from [vercel-labs/next-skills](https://github.com/vercel-labs/next-skills)
+  is not included: the repository has no license file, neither now nor in its history, so
+  redistribution rights are undefined. The `next-best-practices` skill in this plugin was
+  written from scratch for this marketplace (MIT, like the plugin) and contains no text from
+  that repository. It relies on the public Next.js and React documentation.

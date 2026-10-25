@@ -1,106 +1,106 @@
 # research-tools
 
-Плагін з одним агентом, **`researcher`**. Він відповідає на одне конкретне питання з
-доказами і нічого не змінює в репозиторії. Його зручно звати, коли відповідь треба
-зібрати з багатьох файлів чи джерел, а вам потрібен лише висновок.
+A plugin with one agent, **`researcher`**. It answers one specific question with
+evidence and changes nothing in the repository. Call it when the answer has to be
+gathered from many files or sources and you only need the conclusion.
 
-Два режими, які можна поєднати в одному звіті:
+Two modes, which can be combined in one report:
 
-- **A — repo.** Як влаштований код: де лежить X, як працює Y, чому Z зроблено саме так.
-  Кожне твердження підкріплене `file:line`, `git log` або `git blame`.
-- **B — external.** Офіційна документація, changelog-и, issues і статті. До кожного
-  джерела є URL, тип і дата.
+- **A — repo.** How the code works: where X lives, how Y works, why Z was done that way.
+  Every claim is backed by `file:line`, `git log` or `git blame`.
+- **B — external.** Official documentation, changelogs, issues and articles. Every
+  source comes with a URL, type and date.
 
-## Встановлення
+## Installation
 
 ```bash
 /plugin marketplace add aptrnk1/dev-digest-ai-marketplace
 /plugin install research-tools@dev-digest
 ```
 
-Залежностей немає. Плагін також ставиться автоматично як залежність `sdd-engineering`.
+No dependencies. The plugin is also installed automatically as a dependency of `sdd-engineering`.
 
-## Як викликати
+## How to invoke
 
-| Спосіб | Приклад |
+| Method | Example |
 | :- | :- |
-| Згадати агента в повідомленні | `@agent-research-tools:researcher чи включає orderTotal податок?` |
-| З іншого агента чи skill (Agent tool) | `subagent_type: "research-tools:researcher"` |
-| Як головну сесію | `claude --agent research-tools:researcher` |
+| Mention the agent in a message | `@agent-research-tools:researcher does orderTotal include tax?` |
+| From another agent or skill (Agent tool) | `subagent_type: "research-tools:researcher"` |
+| As the main session | `claude --agent research-tools:researcher` |
 
-Claude може й сам делегувати питання агенту, якщо воно підходить під його опис.
+Claude can also delegate a question to the agent on its own when it matches the agent's description.
 
-### Що передати
+### What to pass
 
-Найкращий запит містить три речі:
+The best request has three parts:
 
-1. **Конкретне питання** з відповіддю, яку можна впізнати.
-2. **Тип:** `repo`, `external` або обидва. Якщо тип очевидний, агент визначить його сам.
-3. **Межі:** модуль, бібліотека з версією, проміжок часу.
+1. **A specific question** with a recognizable answer.
+2. **Type:** `repo`, `external` or both. If the type is obvious, the agent works it out.
+3. **Bounds:** a module, a library and its version, a time range.
 
 ```text
 @agent-research-tools:researcher
-Питання: чи зачіпає нас баг у бібліотеці X з issue #1234?
-Тип: both
-Межі: src/payments/, X тієї версії, що в lockfile
+Question: are we affected by the bug in library X from issue #1234?
+Type: both
+Bounds: src/payments/, X at the version in the lockfile
 ```
 
-Якщо питання розмите («глянь auth») або має два прочитання, агент спершу
-питає. За раунд він ставить до 4 питань із варіантами, рекомендований варіант
-іде першим, раундів не більше 3. Коли агент працює як сабагент і `AskUserQuestion`
-недоступний, він повертає блок `## Interview — needs input`. Викликач передає
-відповіді користувача тому самому агенту, і той продовжує з місця зупинки.
+If the question is vague ("look at auth") or has two readings, the agent asks first.
+Per round it asks up to 4 questions with options, the recommended option first, and
+runs no more than 3 rounds. When the agent runs as a subagent and `AskUserQuestion` is
+unavailable, it returns a `## Interview — needs input` block. The caller passes the
+user's answers back to the same agent, which continues where it stopped.
 
-## Що повертає
+## What it returns
 
-Звіт фіксованої структури:
+A report with a fixed structure:
 
-- **Answer (TL;DR):** 2–4 речення, рівень впевненості `high | medium | low`, припущення.
-- **Findings:** нумеровані твердження з посиланнями на докази `[E1]`, `[S1]`.
-- **Evidence:** `E1 — path:line` з коротким уривком коду (до 10 рядків) для repo;
-  `S1 — назва — URL — тип — дата` з дослівною цитатою для external.
-- Для external ще **Relevance to this repo** і **Conflicts & caveats**.
-- **Not found / open:** що агент шукав і не знайшов, і що лишилося відкритим.
-  Секція обов'язкова.
+- **Answer (TL;DR):** 2–4 sentences, a confidence level `high | medium | low`, assumptions.
+- **Findings:** numbered claims with evidence references `[E1]`, `[S1]`.
+- **Evidence:** `E1 — path:line` with a short code excerpt (up to 10 lines) for repo;
+  `S1 — title — URL — type — date` with a verbatim quote for external.
+- For external, also **Relevance to this repo** and **Conflicts & caveats**.
+- **Not found / open:** what the agent looked for and did not find, and what remains
+  open. This section is mandatory.
 
-Для залежностей агент досліджує ту версію, що зафіксована в маніфесті й lockfile
-репо (`package.json`, `pnpm-lock.yaml`, `go.mod`, `pyproject.toml` тощо), а не latest.
+For dependencies, the agent researches the version pinned in the repo's manifest and
+lockfile (`package.json`, `pnpm-lock.yaml`, `go.mod`, `pyproject.toml` and so on), not latest.
 
-## Гарантії та їхні межі
+## Guarantees and their limits
 
-- Інструменти: `Read, Grep, Glob, Bash, WebSearch, WebFetch, AskUserQuestion`. Tools
-  `Write`, `Edit` і `NotebookEdit` заборонені у frontmatter.
-- **Bash лише read-only, але тримається це тільки на промпті.** Поле `tools` не вміє
-  обмежувати окремі команди Bash. Агенту дозволено лише `git log/show/blame`, `ls`,
-  `cat`, `rg`, `jq` і `info`/`view` пакетного менеджера. Щоб обмеження було жорстким,
-  налаштуйте [permission rules](https://code.claude.com/docs/en/permissions) у своєму
-  проєкті.
-- Агент не викликає skills та інших агентів.
-- Нічого не вигадує: твердження без доказу потрапляє в «Not found / open».
-- Вміст файлів і вебсторінок вважається даними, а не інструкціями. Це захист від
-  prompt injection.
-- Модель: `sonnet`.
+- Tools: `Read, Grep, Glob, Bash, WebSearch, WebFetch, AskUserQuestion`. The tools
+  `Write`, `Edit` and `NotebookEdit` are disallowed in the frontmatter.
+- **Bash is read-only, but only the prompt enforces that.** The `tools` field cannot
+  restrict individual Bash commands. The agent may run only `git log/show/blame`, `ls`,
+  `cat`, `rg`, `jq` and the package manager's `info`/`view`. For a hard restriction,
+  configure [permission rules](https://code.claude.com/docs/en/permissions) in your
+  project.
+- The agent does not call skills or other agents.
+- It invents nothing: a claim without evidence goes into "Not found / open".
+- The contents of files and web pages are treated as data, not instructions. This
+  guards against prompt injection.
+- Model: `sonnet`.
 
 ## Evals
 
-`evals/` містить два кейси для `claude plugin eval`:
+`evals/` holds two cases for `claude plugin eval`:
 
-- `repo-question-cites-evidence`: агент відповідає на питання про код фікстури з
-  `file:line` і нічого не редагує;
-- `vague-question-asks-first`: на розмите питання агент спершу уточнює, а не вигадує.
+- `repo-question-cites-evidence`: the agent answers a question about the fixture code with
+  `file:line` and edits nothing;
+- `vague-question-asks-first`: given a vague question, the agent clarifies first instead of guessing.
 
 ```bash
 cd plugins/research-tools
 claude plugin eval . --scaffold
 ```
 
-Прапорець `--scaffold` потрібен, бо фікстуру створює `fixture.sh`.
+The `--scaffold` flag is needed because `fixture.sh` creates the fixture.
 
-## На чому базується
+## Based on
 
 - Anthropic, [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system):
-  дослідник у чистому контексті повертає лише стислий висновок із цитуванням джерел.
+  a researcher in a clean context returns only a concise conclusion with cited sources.
 - Claude Code, [Create custom subagents](https://code.claude.com/docs/en/sub-agents):
-  read-only набір інструментів через `tools` і `disallowedTools`.
+  a read-only tool set via `tools` and `disallowedTools`.
 
-Історія змін описана в [CHANGELOG.md](CHANGELOG.md).
+The change history is in [CHANGELOG.md](CHANGELOG.md).

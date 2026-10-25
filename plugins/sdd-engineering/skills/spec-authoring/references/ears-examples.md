@@ -1,46 +1,46 @@
-# EARS — погано → добре
+# EARS — bad → good
 
-Приклади на вигаданій фічі «повернення коштів за замовлення» (orders / refunds).
+Examples on a made-up feature, "refunds for an order" (orders / refunds).
 
-## Розмите слово
-- ✗ «Список повернень має швидко завантажуватися.»
-- ✓ **NFR1** Латентність: `GET /orders/:id/refunds` для ≤ 20 записів
-  відповідає ≤ 300 мс p95 на seed-даних — перевірка: `[it]` з таймером.
+## Vague word
+- ✗ "The refunds list should load fast."
+- ✓ **NFR1** Latency: `GET /orders/:id/refunds` for ≤ 20 records
+  responds in ≤ 300 ms p95 on seed data — verification: `[it]` with a timer.
 
-## Дві поведінки в одному AC
-- ✗ «КОЛИ юзер натискає Approve, система зберігає статус і показує Undo.»
-- ✓ **AC3** (event, US2) КОЛИ юзер натискає Approve на картці повернення, API
-  повинен (shall) зберегти `status = approved`. `[it]`
-- ✓ **AC4** (event, US2) КОЛИ API підтвердив Approve, UI повинен (shall)
-  показати на картці бейдж «Approved» і кнопку Undo. `[unit]`
+## Two behaviours in one AC
+- ✗ "WHEN the user clicks Approve, the system saves the status and shows Undo."
+- ✓ **AC3** (event, US2) WHEN the user clicks Approve on a refund card, the API
+  shall save `status = approved`. `[it]`
+- ✓ **AC4** (event, US2) WHEN the API has confirmed Approve, the UI shall
+  show an "Approved" badge and an Undo button on the card. `[unit]`
 
-## Немає unwanted-пари
-- ✗ лише «КОЛИ юзер створює повернення, API повинен (shall) повернути 202.»
-- ✓ + **AC6** (unwanted, US1) ЯКЩО замовлення ще не оплачене, ТОДІ API
-  повинен (shall) повернути 409 `order_not_paid`, а UI — показати пояснення з
-  посиланням на сторінку оплати. `[unit]`
+## Missing unwanted pair
+- ✗ only "WHEN the user creates a refund, the API shall return 202."
+- ✓ + **AC6** (unwanted, US1) IF the order is not paid yet, THEN the API
+  shall return 409 `order_not_paid`, and the UI shall show an explanation with
+  a link to the payment page. `[unit]`
 
-## Опис коду замість поведінки
-- ✗ «`RefundService.create()` викликає `payments.getCharge()`.»
-- ✓ **AC2** (ubiquitous, US1) Система повинна (shall) дозволяти повернення
-  лише на суму ≤ сплаченої за замовлення мінус уже повернене. `[unit]`
+## Describing code instead of behaviour
+- ✗ "`RefundService.create()` calls `payments.getCharge()`."
+- ✓ **AC2** (ubiquitous, US1) The system shall allow a refund
+  only for an amount ≤ what was paid for the order minus what was already refunded. `[unit]`
 
-## Стан
-- ✓ **AC7** (state, US1) ПОКИ повернення має статус `processing`, UI повинен
-  (shall) показувати прогрес і блокувати кнопку Retry з підказкою
-  «Refund in progress». `[unit]` `[e2e]`
+## State
+- ✓ **AC7** (state, US1) WHILE a refund has status `processing`, the UI
+  shall show progress and disable the Retry button with the hint
+  "Refund in progress". `[unit]` `[e2e]`
 
-## Опція
-- ✓ **AC9** (optional, US3) ДЕ для магазину ввімкнено часткові повернення,
-  система повинна (shall) приймати суму, меншу за повну. `[unit]`
+## Option
+- ✓ **AC9** (optional, US3) WHERE partial refunds are enabled for the shop,
+  the system shall accept an amount lower than the full one. `[unit]`
 
-## Комбінація
-- ✓ **AC10** (complex, US1) ПОКИ повернення `processing` довше 10 хв, КОЛИ
-  надходить новий запит на те саме замовлення, API повинен (shall) позначити
-  старе повернення `failed` і прийняти новий запит з 202. `[it]`
+## Combination
+- ✓ **AC10** (complex, US1) WHILE a refund has been `processing` for more than 10 min, WHEN
+  a new request for the same order arrives, the API shall mark
+  the old refund `failed` and accept the new request with 202. `[it]`
 
-## LLM-залежна поведінка
-- ✗ «e2e: модель класифікує причину повернення як "damaged".»
-- ✓ **AC5** (unwanted, US1) ЯКЩО модель повертає категорію поза переліком
-  `damaged | wrong_item | other`, ТОДІ система повинна (shall) зберегти
-  `other`. `[unit]` з мок-провайдером.
+## LLM-dependent behaviour
+- ✗ "e2e: the model classifies the refund reason as "damaged"."
+- ✓ **AC5** (unwanted, US1) IF the model returns a category outside
+  `damaged | wrong_item | other`, THEN the system shall save
+  `other`. `[unit]` with a mock provider.

@@ -1,28 +1,33 @@
 # Changelog
 
-Усі помітні зміни плагіна `engineering-paved-path`. Формат —
-[Keep a Changelog](https://keepachangelog.com/uk/1.1.0/), версії —
-[SemVer](https://semver.org/lang/uk/).
+All notable changes to the `engineering-paved-path` plugin. Format:
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versions follow
+[SemVer](https://semver.org/).
 
 ## [Unreleased]
+
+## [1.0.1] - 2026-10-25
+
+### Changed
+- Documentation translated to English.
 
 ## [1.0.0] - 2026-10-25
 
 ### Added
-- `next-best-practices`, написаний з нуля: межі server/client, data fetching і
-  кешування за версіями, async request APIs, Server Actions, route handlers, файлові
-  конвенції, metadata, streaming, assets, hydration-помилки, чекліст рев'ю.
-- `fastify-best-practices` з [mcollina/skills](https://github.com/mcollina/skills)
-  (`skills/fastify/`) без змін.
-- `onion-architecture`, перенесений з репозиторію dev-digest і узагальнений для
-  будь-якого TypeScript/Node бекенду: прибрано структуру й правила конкретного
-  проєкту, приклади стали ілюстративними, перевірка через dependency-cruiser
-  стала опційною. `references/drizzle.md` перейменовано на `persistence.md`,
-  `references/zod-boundaries.md` — на `validation-boundaries.md`.
-- `react-best-practices`, `react-testing-library` і `security`, перенесені з
-  репозиторію dev-digest з дрібними правками для нейтральності.
+- `next-best-practices`, written from scratch: server/client boundaries, version-aware
+  data fetching and caching, async request APIs, Server Actions, route handlers, file
+  conventions, metadata, streaming, assets, hydration errors, a review checklist.
+- `fastify-best-practices` from [mcollina/skills](https://github.com/mcollina/skills)
+  (`skills/fastify/`), unchanged.
+- `onion-architecture`, ported from the dev-digest repository and generalized for
+  any TypeScript/Node backend: removed the specific project's structure and rules,
+  examples became illustrative, the dependency-cruiser check became optional.
+  `references/drizzle.md` renamed to `persistence.md`,
+  `references/zod-boundaries.md` to `validation-boundaries.md`.
+- `react-best-practices`, `react-testing-library` and `security`, ported from the
+  dev-digest repository with minor edits for neutrality.
 - `README.md`, `THIRD_PARTY_NOTICES.md`.
 
 ### Not included
-- `next-best-practices` з vercel-labs/next-skills: у першоджерела немає ліцензії,
-  тому skill з такою самою назвою написано з нуля.
+- `next-best-practices` from vercel-labs/next-skills: the upstream has no license,
+  so a skill with the same name was written from scratch.

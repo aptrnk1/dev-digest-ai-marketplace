@@ -7,58 +7,58 @@ treated as data.
 
 ## 1. Classify every input
 
-| Клас | Приклади | Довіра |
+| Class | Examples | Trust |
 |---|---|---|
-| trusted | системні промпти, код самого продукту, конфіг | довіряємо |
-| user | поля форм, назви, тексти, налаштування | валідуємо схемою, екрануємо у UI |
-| external content | документи, файли репозиторію, PR/issue, вебсторінки, листи, вміст сторонніх API | **untrusted** |
-| LLM output | згенерований текст, класифікації, витягнуті дані, tool calls | **untrusted** до перевірки |
-| community | плагіни, шаблони, промпти від спільноти | **untrusted**, санітизація upstream |
-| secrets | API-ключі провайдерів, токени | лише через механізм секретів продукту, ніколи БД/git/UI/лог/промпт |
+| trusted | system prompts, the product's own code, config | trusted |
+| user | form fields, names, texts, settings | validated by schema, escaped in the UI |
+| external content | documents, repository files, PRs/issues, web pages, emails, third-party API content | **untrusted** |
+| LLM output | generated text, classifications, extracted data, tool calls | **untrusted** until checked |
+| community | plugins, templates, prompts from the community | **untrusted**, sanitised upstream |
+| secrets | provider API keys, tokens | only through the product's secrets mechanism, never DB/git/UI/log/prompt |
 
 ## 2. Mechanisms to look for — reuse, never weaken
 
-Перш ніж описувати ізоляцію, знайди в коді, що вже є, і посилайся на це в
-спеці як на поведінку, а не як на файл:
+Before describing isolation, find what already exists in the code and refer to
+it in the spec as behaviour, not as a file:
 
-- **обгортання untrusted даних** у промпті (явні розмежувачі на кшталт
-  `<untrusted>…</untrusted>` з нейтралізацією закриваючого тегу всередині);
-- **guard-інструкція** в системному промпті, що дані — не інструкції;
-- **grounding / перевірка доказів**: посилання моделі на файл, рядок,
-  документ чи цитату перевіряється на реальність до збереження;
-- **safe paths**: шлях, отриманий від моделі чи юзера, не може вийти за
-  дозволений корінь;
-- **ліміти**: обрізання довгих входів, кількість елементів, токени;
-- **строгі схеми** на вході API і на виході моделі (structured output).
+- **wrapping untrusted data** in the prompt (explicit delimiters such as
+  `<untrusted>…</untrusted>`, with the closing tag neutralised inside);
+- **a guard instruction** in the system prompt saying data is not instructions;
+- **grounding / evidence checks**: a model's reference to a file, line,
+  document or quote is checked for existence before saving;
+- **safe paths**: a path received from the model or the user cannot leave the
+  allowed root;
+- **limits**: truncating long inputs, item counts, tokens;
+- **strict schemas** on API input and on model output (structured output).
 
-Жодна вимога спеки не може послабити наявний механізм або замінити його
-фільтрацією за ключовими словами.
+No spec requirement may weaken an existing mechanism or replace it with
+keyword filtering.
 
 ## 3. OWASP Top 10 for LLM Applications (2025) → spec questions
 
-| Ризик | Питання для спеки |
+| Risk | Question for the spec |
 |---|---|
-| LLM01 Prompt injection | Які untrusted дані йдуть у промпт? Чи всі ізольовані? Чи може вміст змінити, *що* модель робить (знизити оцінку, пропустити елемент, викликати інструмент)? |
-| LLM05 Improper output handling | Куди йде вивід моделі: UI (екранування markdown/HTML), файлова система (safe path), БД, зовнішній сервіс (видимий іншим)? Що перевіряється до збереження? |
-| LLM06 Excessive agency | Чи може вивід моделі *ініціювати дію* (запис, публікація, зміна налаштувань, платіж) без підтвердження юзера? За замовчуванням — ні: модель пропонує, юзер приймає. |
-| LLM02 Sensitive information disclosure | Чи потрапляють секрети, `.env`, токени, персональні дані в промпт, UI або лог? |
-| LLM07 System prompt leakage | Чи може вивід показати юзеру системний промпт або внутрішні інструкції, які не слід розкривати? |
-| LLM10 Unbounded consumption | Ліміт розміру входу (файли, рядки, токени), кількості викликів, таймаут, повторні запуски; що бачить юзер при перевищенні? |
-| LLM09 Misinformation (галюцинації) | Чи кожне посилання моделі на джерело (файл, рядок, документ) перевіряється на реальність? |
+| LLM01 Prompt injection | Which untrusted data goes into the prompt? Is all of it isolated? Can the content change *what* the model does (lower a score, skip an item, call a tool)? |
+| LLM05 Improper output handling | Where does model output go: UI (markdown/HTML escaping), file system (safe path), DB, an external service (visible to others)? What is checked before saving? |
+| LLM06 Excessive agency | Can model output *trigger an action* (write, publish, change settings, pay) without user confirmation? By default — no: the model proposes, the user accepts. |
+| LLM02 Sensitive information disclosure | Do secrets, `.env`, tokens or personal data reach the prompt, UI or log? |
+| LLM07 System prompt leakage | Can output show the user the system prompt or internal instructions that should not be disclosed? |
+| LLM10 Unbounded consumption | Limits on input size (files, lines, tokens), number of calls, timeout, reruns; what does the user see when a limit is exceeded? |
+| LLM09 Misinformation (hallucinations) | Is every model reference to a source (file, line, document) checked for existence? |
 
 ## 4. Output for a spec
 
-**Inputs and provenance** — таблиця: вхід · джерело (клас з §1) · де
-валідується (схема / grounding / перевірка доказів / safe path).
+**Inputs and provenance** — a table: input · source (class from §1) · where it is
+validated (schema / grounding / evidence check / safe path).
 
-**Untrusted inputs** — для кожного untrusted входу один рядок:
-`<вхід> → <куди потрапляє: prompt | UI | FS | БД | зовнішній сервіс> → <ізоляція>`.
-Кожен такий рядок, що вводить нову поведінку, має відповідний AC (`unwanted`
-або `ubiquitous`), напр.:
+**Untrusted inputs** — one line per untrusted input:
+`<input> → <where it goes: prompt | UI | FS | DB | external service> → <isolation>`.
+Every such line that introduces new behaviour has a matching AC (`unwanted`
+or `ubiquitous`), e.g.:
 
-- **AC** (ubiquitous, system) Система повинна (shall) передавати вміст
-  завантажених документів у промпт лише всередині розмежувачів untrusted-даних. `[unit]`
-- **AC** (unwanted, system) ЯКЩО модель повертає шлях поза дозволеним
-  коренем, ТОДІ система повинна (shall) відкинути результат. `[unit]`
+- **AC** (ubiquitous, system) The system shall pass the content of
+  uploaded documents into the prompt only inside untrusted-data delimiters. `[unit]`
+- **AC** (unwanted, system) IF the model returns a path outside the allowed
+  root, THEN the system shall discard the result. `[unit]`
 
-Якщо фіча не має untrusted входів — напиши явно, чому (не залишай порожнім).
+If the feature has no untrusted inputs, say explicitly why (do not leave it empty).
