@@ -5,13 +5,10 @@
     "name": "aptrnk1",
     "url": "https://github.com/aptrnk1"
   },
+  "renames": {
+    "hello": null
+  },
   "plugins": [
-    {
-      "name": "hello",
-      "source": "./plugins/hello",
-      "description": "Example plugin: a greeting skill that shows the marketplace layout",
-      "category": "examples"
-    },
     {
       "name": "engineering-paved-path",
       "source": "./plugins/engineering-paved-path",

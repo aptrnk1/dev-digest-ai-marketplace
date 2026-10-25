@@ -24,7 +24,6 @@ Added the marketplace before it was renamed from `dev-digest`? Re-add it, then r
 | [architecture-review](plugins/architecture-review) | Read-only architecture reviewer agent: layers, dependency direction, module boundaries |
 | [research-tools](plugins/research-tools) | Read-only researcher agent: answers a concrete question from the codebase or the web with cited evidence |
 | [engineering-paved-path](plugins/engineering-paved-path) | Stack skills for React, Next.js, Fastify, onion architecture, React Testing Library and web security |
-| [hello](plugins/hello) | Example plugin: a greeting skill that shows the marketplace layout |
 
 `sdd-engineering` installs its dependencies automatically:
 
