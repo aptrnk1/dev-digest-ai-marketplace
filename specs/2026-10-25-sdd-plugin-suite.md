@@ -174,16 +174,15 @@ plugins/
 
 ## Реєстрація, версії й релізи
 - У `marketplace.json` чотири записи, у кожному `name`, `source: "./plugins/<name>"`,
-  `version`, `author`, `description`, `category: "engineering"`. `owner` задається на
+  `author`, `description`, `category: "engineering"`. `owner` задається на
   рівні маркетплейсу, у записі плагіна цю роль виконує `author`.
-- `version` вказуємо і в `plugin.json`, і в записі маркетплейсу та тримаємо їх
-  однаковими: `claude plugin tag` перевіряє, що вони збігаються. Правило кореневого
-  `README.md` «version лише в plugin.json» оновлюємо відповідно.
+- `version` вказуємо лише в `plugin.json`, у записі маркетплейсу його немає
+  ([ADR-0002](../docs/adr/0002-versioning-strategy.md)).
 - `CHANGELOG.md` у кожному плагіні у форматі Keep a Changelog. Зверху `## [Unreleased]`,
   перший запис `## [1.0.0] - <дата>` з переліком перенесеного й посиланням на коміт
   джерела в dev-digest.
-- Реліз іде так: bump версії в обох місцях → CHANGELOG → merge у `main` →
-  `claude plugin tag --push` у теці плагіна, що створює тег `<plugin>--v<version>`.
+- Реліз іде так: bump версії в `plugin.json` → CHANGELOG → merge у `main` → тег
+  `<plugin>--v<version>` (`git tag` або `claude plugin tag --push` у теці плагіна).
   Плагіни підключені за relative path, тому діапазон `^1.0.0` резолвиться саме за цими
   тегами в репо маркетплейсу.
 - Порядок першого релізу: спершу три залежності, потім `sdd-engineering`.

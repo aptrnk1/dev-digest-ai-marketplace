@@ -42,8 +42,8 @@ Full rules: [docs/plugin-authoring.md](docs/plugin-authoring.md), [docs/release-
 Conventions:
 
 - Keep the entry `name` and `plugin.json` `name` identical and never rename them; use `displayName` or the `renames` map.
-- Set `version` (semver) in `plugin.json` and in the marketplace entry, keep them equal, and bump both on every change: users don't receive commits made without a bump. `claude plugin tag` refuses to tag when they differ.
-- Keep a `CHANGELOG.md` per plugin. Release: bump → changelog → merge to `main` → `claude plugin tag --push` from the plugin directory (creates `<plugin>--v<version>`). Dependency ranges such as `^1.0.0` resolve against these tags, so tag dependencies before the plugins that depend on them.
+- Set `version` (semver) only in `plugin.json`, never in the marketplace entry, and bump it on every change: users don't receive commits made without a bump ([ADR-0002](docs/adr/0002-versioning-strategy.md)).
+- Plugins that others depend on with a range such as `^1.0.0` need release tags `<plugin>--v<version>` on `main` (`git tag <plugin>--v<version>`, or `claude plugin tag --push` from the plugin directory). Tag dependencies before the plugins that depend on them.
 - Reference another plugin's skills and agents by namespaced name, e.g. `engineering-paved-path:onion-architecture`.
 - Quote `"${CLAUDE_PLUGIN_ROOT}"` in hooks and call scripts through an interpreter (`bash`, `node`).
 - No secrets in `.mcp.json`; use `userConfig` with `"sensitive": true`.
