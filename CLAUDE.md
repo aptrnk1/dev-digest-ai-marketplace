@@ -1,6 +1,6 @@
 # dev-digest-ai-marketplace
 
-A Claude Code plugin marketplace named `dev-digest`. The catalog is `.claude-plugin/marketplace.json`; plugins live in `plugins/<name>/`.
+A Claude Code plugin marketplace named `dev-digest-ai-marketplace`. The catalog is `.claude-plugin/marketplace.json`; plugins live in `plugins/<name>/`.
 
 Before adding or changing a plugin, read:
 

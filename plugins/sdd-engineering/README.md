@@ -14,7 +14,7 @@ has a narrow role and limited write access.
 
 ```bash
 /plugin marketplace add aptrnk1/dev-digest-ai-marketplace
-/plugin install sdd-engineering@dev-digest
+/plugin install sdd-engineering@dev-digest-ai-marketplace
 ```
 
 The plugin's dependencies are installed and enabled automatically along with it (range
@@ -142,7 +142,7 @@ All parameters are passed in the delegation to an agent or in skill arguments (`
 only there. If your repo keeps specs elsewhere, set them once:
 
 ```text
-/plugin configure sdd-engineering@dev-digest
+/plugin configure sdd-engineering@dev-digest-ai-marketplace
 ```
 
 Agents take these values as defaults, so the hook and the agent never disagree.

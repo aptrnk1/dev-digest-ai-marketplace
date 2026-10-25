@@ -12,7 +12,7 @@ executables here, only Markdown instructions.
 
 ```bash
 /plugin marketplace add aptrnk1/dev-digest-ai-marketplace
-/plugin install engineering-paved-path@dev-digest
+/plugin install engineering-paved-path@dev-digest-ai-marketplace
 ```
 
 If you install `architecture-review` or `sdd-engineering`, this plugin installs

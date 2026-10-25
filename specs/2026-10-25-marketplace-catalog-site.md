@@ -445,7 +445,7 @@ the repo root (AC9).
 - **AC40** (event, US3) WHEN the user clicks `Copy install`, the UI shall copy
   two lines, `/plugin marketplace add <owner>/<repo>` and
   `/plugin install <plugin>@<marketplace name>` (for this repo:
-  `aptrnk1/dev-digest-ai-marketplace` and `@dev-digest`; values come from the
+  `aptrnk1/dev-digest-ai-marketplace` and `@dev-digest-ai-marketplace`; values come from the
   index). For 2 s the button shows `Скопійовано ✓` (Copied ✓), and a toast
   `✓ Скопійовано в буфер` (✓ Copied to clipboard) is visible at the bottom of
   the screen for 1.8 s. Both are announced via `aria-live`. `[e2e]`

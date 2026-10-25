@@ -22,7 +22,7 @@ Run before opening a PR:
 claude plugin validate . --strict
 claude plugin validate plugins/<name> --strict
 claude plugin marketplace add ./
-claude plugin install <name>@dev-digest
+claude plugin install <name>@dev-digest-ai-marketplace
 claude plugin details <name>
 ```
 
@@ -30,7 +30,7 @@ Then start a session and run the plugin's skills or commands. Validation and ins
 
 A marketplace added from a local directory loads relative-path plugins in place, so edits apply at the next session or after `/reload-plugins`, without a bump. That is not what users see; they need the bump.
 
-Clean up with `claude plugin marketplace remove dev-digest`.
+Clean up with `claude plugin marketplace remove dev-digest-ai-marketplace`.
 
 ## CI
 
@@ -45,9 +45,10 @@ Each plugin keeps a `CHANGELOG.md` next to its `plugin.json`, newest version fir
 - **Rename**: add `"renames": { "<old>": "<new>" }` at the top level of `marketplace.json`, rename the folder, both `name` fields and the README row in the same PR.
 - **Remove**: delete the entry and add `"renames": { "<old>": null }`. Set `"forceRemoveDeletedPlugins": true` only if installed copies must be uninstalled from users' machines.
 - `renames` is append-only. Never delete an old key: users who skipped versions still need it.
+- **Marketplace name**: `renames` covers plugins only. Changing the top-level `name` in `marketplace.json` changes every install id (`<plugin>@<marketplace>`), so users must remove and re-add the marketplace. Avoid it; the last rename was `dev-digest` → `dev-digest-ai-marketplace`.
 
 ## When users don't get an update
 
-- Auto-update is off by default for third-party marketplaces. Users turn it on per marketplace in `/plugin`, or run `/plugin marketplace update dev-digest` and update the plugin.
+- Auto-update is off by default for third-party marketplaces. Users turn it on per marketplace in `/plugin`, or run `/plugin marketplace update dev-digest-ai-marketplace` and update the plugin.
 - A running session picks up updates after `/reload-plugins`.
 - If the panel shows the new version but old behaviour persists, uninstall and reinstall the plugin.
