@@ -122,7 +122,7 @@ Ukrainian or English; headings are English). Extract:
      (legacy specs: "Out of scope") — a Non-goal that was implemented is a
      `DEVIATION`. If ACs are unnumbered, number them in document order and
      say so.
-   - inline (e.g. "вимоги нижче (R1–R9)") → the requirements live in the
+   - inline (e.g. "requirements below (R1–R9)") → the requirements live in the
      plan's own `## Requirements` (or similarly named) section; take every
      `R<n>` item as a top-level requirement.
    - missing / unreadable → continue with plan items only and list the spec

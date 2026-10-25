@@ -1,7 +1,7 @@
 {
   "name": "sdd-engineering",
   "displayName": "SDD Engineering",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Spec Driven Development pipeline: spec, implementation plan, run-plan, verification and workflow retro",
   "author": {
     "name": "aptrnk1"

@@ -1,26 +1,26 @@
-# Spec: <назва фічі>
+# Spec: <feature name>
 Spec ID: SPEC-YYYY-MM-DD-<slug>
 Status: draft | approved | implemented | superseded by <Spec ID>
-Supersedes: <посилання на попередню спеку, якщо ця її замінює; інакше «—»>
-Modules: <які модулі (пакети, застосунки, сервіси) репо зачіпає фіча>
-Design: <`<designs_dir>/<date>-<slug>/` (D1–Dn, індекс у §Дизайн); інакше «—»>
+Supersedes: <link to the previous spec if this one replaces it; otherwise "—">
+Modules: <which repo modules (packages, apps, services) the feature touches>
+Design: <`<designs_dir>/<date>-<slug>/` (D1–Dn, indexed in §Design); otherwise "—">
 
 <!--
-Правила заповнення (коментарі в готову спеку не переносяться):
-- Мова — українська; код, шляхи, назви ендпоінтів, таблиць і контрактів — як у коді.
-- Спека описує ЩО і ЧОМУ, а не ЯК: без імен файлів, класів і функцій. Контракт
-  (ендпоінт, статус-код, поле) можна, якщо це спостережувана поведінка.
-- Макети лежать у `<designs_dir>/<date>-<slug>/` (дефолт `specs/designs/`);
-  AC може посилатися на «D2» (що там показано, всі бачать у файлі), але
-  поведінка, яку треба перевірити, все одно записується як AC — «як на
-  макеті» без AC не рахується.
-- ID (US, AC, EC, NFR) не перенумеровуються після approve: видалений пункт
-  позначається «(removed) <причина>».
-- Правила EARS, слабкі слова, verification-мітки: скіл `sdd-engineering:spec-authoring`.
+Filling rules (comments are not carried into the finished spec):
+- Language: English; code, paths, endpoint, table and contract names as in the code.
+- The spec describes WHAT and WHY, not HOW: no file, class or function names. A
+  contract (endpoint, status code, field) is fine when it is observable behaviour.
+- Designs live in `<designs_dir>/<date>-<slug>/` (default `specs/designs/`);
+  an AC may refer to "D2" (everyone can see what it shows in the file), but
+  behaviour that must be verified is still written as an AC — "as in the
+  design" without an AC does not count.
+- IDs (US, AC, EC, NFR) are not renumbered after approval: a removed item is
+  marked "(removed) <reason>".
+- EARS rules, weak words, verification tags: skill `sdd-engineering:spec-authoring`.
 -->
 
-## Проблема й користувач
-<!-- Хто користувач, який біль, що він робить зараз і чому цього мало. -->
+## Problem and user
+<!-- Who the user is, what hurts, what they do today and why that is not enough. -->
 
 ## Goals / Non-goals
 **Goals**
@@ -30,82 +30,82 @@ Design: <`<designs_dir>/<date>-<slug>/` (D1–Dn, індекс у §Дизайн
 - …
 
 ## User stories
-- **US1** Як <роль>, я <дія>, щоб <цінність>.
+- **US1** As a <role>, I <action>, so that <value>.
 
-## Дизайн
-<!-- Макети, які юзер скинув у чат, зберігаються в репо:
-     `<designs_dir>/<YYYY-MM-DD>-<slug>/D1.png, D2.png…` (скрипт save-designs.mjs
-     скіла spec-authoring). Будь-який агент читає їх через Read. Тут — лише
-     індекс: один рядок на файл. Немає дизайну → «—» і чому (наприклад,
-     «без UI» або «UI за аналогією з <сторінка>»). -->
-| D# | Файл | Екран / стан |
-|----|------|--------------|
-| D1 | `specs/designs/<date>-<slug>/D1.png` | <що на ньому: екран, показаний стан> |
+## Design
+<!-- Designs the user pasted into the chat are stored in the repo:
+     `<designs_dir>/<YYYY-MM-DD>-<slug>/D1.png, D2.png…` (the save-designs.mjs
+     script of the spec-authoring skill). Any agent reads them with Read. This is
+     only the index: one row per file. No design → "—" and why (for example,
+     "no UI" or "UI follows <page>"). -->
+| D# | File | Screen / state |
+|----|------|----------------|
+| D1 | `specs/designs/<date>-<slug>/D1.png` | <what it shows: screen, state shown> |
 
-## Екрани й стани
-<!-- Лише якщо є UI; інакше «—». Метод: spec-authoring → references/ux-states.md.
-     Кожна клітинка — D# (намальовано), короткий опис або AC# (додано спекою);
-     «?» → Open questions. Кожен D# з §Дизайн з'являється хоча б в одній
-     клітинці. Еталонна сторінка для узгодженості: <шлях до схожої сторінки>. -->
-| Екран | ideal | empty | loading | partial | error |
-|-------|-------|-------|---------|---------|-------|
+## Screens and states
+<!-- Only if there is UI; otherwise "—". Method: spec-authoring → references/ux-states.md.
+     Each cell is a D# (drawn), a short description or an AC# (added by the spec);
+     "?" → Open questions. Every D# from §Design appears in at least one
+     cell. Reference page for consistency: <path to a similar page>. -->
+| Screen | ideal | empty | loading | partial | error |
+|--------|-------|-------|---------|---------|-------|
 | … | … | … | … | … | … |
 
-## Взаємодія модулів
-<!-- Хто кого викликає для кожної дії юзера; що вже є, а що нове.
-     Спільний контракт — у кожній його копії, якщо репо тримає кілька.
-     Діаграма — за потреби, одна (spec-authoring → references/mermaid.md). -->
-| Дія | Шлях (UI → API → сервіс → БД / LLM / зовнішній API) | Контракт / ендпоінт | Нове чи є |
-|-----|------|------|------|
+## Module interaction
+<!-- Who calls whom for each user action; what exists and what is new.
+     A shared contract goes in every copy of it if the repo keeps several.
+     A diagram only if needed, one (spec-authoring → references/mermaid.md). -->
+| Action | Path (UI → API → service → DB / LLM / external API) | Contract / endpoint | New or existing |
+|--------|------|------|------|
 | … | … | … | … |
 
-Вплив на інших споживачів: <CLI, MCP-тули, інші сторінки, seed, e2e-флоу, або «—»>
+Impact on other consumers: <CLI, MCP tools, other pages, seed, e2e flows, or "—">
 
 ## Acceptance criteria (EARS)
 <!--
-Формат: **AC<n>** (<тип>, US<n> | system) <речення> `[unit|it|e2e|manual]`
-- ubiquitous — «Система повинна (shall) …»
-- event      — «КОЛИ <подія>, система повинна (shall) …»
-- state      — «ПОКИ <стан>, система повинна (shall) …»
-- unwanted   — «ЯКЩО <небажана умова>, ТОДІ система повинна (shall) …»
-- optional   — «ДЕ <опцію ввімкнено>, система повинна (shall) …»
-- complex    — «ДЕ … ПОКИ … КОЛИ … система повинна (shall) …»
-Поведінка, що залежить від LLM, — не [e2e] (e2e без LLM).
+Format: **AC<n>** (<type>, US<n> | system) <sentence> `[unit|it|e2e|manual]`
+- ubiquitous — "The system shall …"
+- event      — "WHEN <event>, the system shall …"
+- state      — "WHILE <state>, the system shall …"
+- unwanted   — "IF <unwanted condition>, THEN the system shall …"
+- optional   — "WHERE <option is enabled>, the system shall …"
+- complex    — "WHERE … WHILE … WHEN … the system shall …"
+Behaviour that depends on an LLM is not [e2e] (e2e runs without an LLM).
 -->
-- **AC1** (event, US1) КОЛИ …, система повинна (shall) … `[unit]`
+- **AC1** (event, US1) WHEN …, the system shall … `[unit]`
 
 ## Edge cases
-<!-- Кейс → очікувана поведінка → AC# (або «→ Open questions»). -->
+<!-- Case → expected behaviour → AC# (or "→ Open questions"). -->
 - **EC1** … → … (AC#)
 
 ## Non-functional requirements
-<!-- Число + спосіб перевірки. Латентність, ліміти, розміри, вартість LLM,
-     a11y (WCAG 2.2 AA), i18n (каталог рядків), стійкість до перезапуску. -->
-- **NFR1** <атрибут>: <вимога з числом> — перевірка: <як>
+<!-- A number + a way to verify it. Latency, limits, sizes, LLM cost,
+     a11y (WCAG 2.2 AA), i18n (string catalog), resilience to restarts. -->
+- **NFR1** <attribute>: <requirement with a number> — verification: <how>
 
 ## Inputs and provenance
-<!-- Кожен вхід фічі: звідки береться і хто/де його валідує.
-     Метод: spec-authoring → references/llm-trust-boundaries.md. -->
-| Вхід | Джерело (trusted / user / external content / LLM / secrets) | Валідація |
-|------|---------|-----------|
+<!-- Every input of the feature: where it comes from and who/where validates it.
+     Method: spec-authoring → references/llm-trust-boundaries.md. -->
+| Input | Source (trusted / user / external content / LLM / secrets) | Validation |
+|-------|---------|-----------|
 | … | … | … |
 
 ## Untrusted inputs
-<!-- <вхід> → <куди: prompt | UI | FS | БД | зовнішній сервіс> → <ізоляція>.
-     Нічого untrusted → явно сказати чому. -->
+<!-- <input> → <where: prompt | UI | FS | DB | external service> → <isolation>.
+     Nothing untrusted → say explicitly why. -->
 - …
 
 ## Assumptions
-<!-- Що вирішено без підтвердження юзера і може бути заперечено на рев'ю. -->
+<!-- What was decided without the user's confirmation and may be challenged in review. -->
 - …
 
 ## Open questions
-<!-- Питання · варіанти · хто вирішує · blocking / non-blocking.
-     Спеку можна approve лише без blocking-питань. Порожньо → «—». -->
+<!-- Question · options · who decides · blocking / non-blocking.
+     A spec can be approved only without blocking questions. Empty → "—". -->
 - …
 
 ## Traceability
-<!-- Кожна US має ≥1 AC; кожен EC → AC або Open question; кожен AC має мітку. -->
+<!-- Every US has ≥1 AC; every EC → AC or Open question; every AC has a tag. -->
 | US | AC | EC | NFR | Verification |
 |----|----|----|-----|--------------|
 | US1 | AC1 | EC1 | — | AC1 [unit] |

@@ -16,4 +16,8 @@ Rules that break installs if ignored:
 - Paths start with `./`, never contain `..`.
 - Run `claude plugin validate . --strict` after every change to `plugins/` or `.claude-plugin/`.
 
+## Language
+
+Every document in the repo is written in English: READMEs, changelogs, specs, ADRs, docs, skills, agents, templates and code comments. Ukrainian appears only as product data: site UI strings (`site/src/i18n/uk.json`), search synonyms and stop words, tests and eval prompts that exercise Ukrainian input, and legacy-heading aliases kept for backward compatibility.
+
 Architecture decisions are in `docs/adr/`.

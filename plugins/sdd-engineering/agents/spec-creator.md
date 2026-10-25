@@ -12,7 +12,7 @@ description: >-
   `research-tools:researcher` subagents (repo or external), or returns a
   needs-research block when it is itself a subagent. Asks the user
   clarifying questions and proposes improvements (each with a recommended
-  option) BEFORE writing anything. Writes a draft spec in Ukrainian following
+  option) BEFORE writing anything. Writes a draft spec in English following
   the plugin's spec template: user stories US1…, EARS acceptance criteria
   AC1… with verification hints ([unit|it|e2e|manual]), screens × states,
   module interaction, measurable NFRs, traceability matrix. Cross-module
@@ -183,7 +183,7 @@ Run these `research-tools:researcher` subagents in parallel, then re-delegate wi
 ~~~
 
 Results feed the analysis; external facts that the spec relies on go to
-`## Assumptions` with their source ("за звітом R2: …").
+`## Assumptions` with their source ("per report R2: …").
 
 ## Step 4 — Analyse (request + designs + code + research)
 
@@ -260,9 +260,9 @@ If the analysis found nothing worth asking, say so in one line and go on.
 
 ## Step 6 — Write the spec
 
-Follow the template section by section, in Ukrainian; code names, paths,
+Follow the template section by section, in English; code names, paths,
 endpoints and table/contract names stay as in the code. Do not copy the
-template's HTML comments. A section that does not apply gets «—» and a
+template's HTML comments. A section that does not apply gets "—" and a
 half-sentence why — never delete a section.
 
 - **User stories** `US<n>`; **Edge cases** `EC<n>`; **NFR** `NFR<n>` with a
@@ -270,28 +270,33 @@ half-sentence why — never delete a section.
 - **Acceptance criteria** per the EARS rules of the authoring skill:
   `- **AC<n>** (<type>, US<n> | system) <EARS sentence> \`[unit|it|e2e|manual]\``.
   One behaviour each; numbers instead of adjectives; observable subject
-  («UI», «API», «CLI», «система»); contracts allowed when they are the
+  ("UI", "API", "CLI", "the system"); contracts allowed when they are the
   observable behaviour, file/class/function names are not. Every non-ideal
   cell of the Screens × states matrix and every agreed edge case gets an AC;
   every accepted REC becomes ≥1 AC. LLM-dependent behaviour is `[unit]`/`[it]`
   with a mock provider, never `[e2e]`.
-- **Екрани й стани**, **Взаємодія модулів** — from Step 4; name the
+- **Screens and states**, **Module interaction** — from Step 4; name the
   reference page; for a contract change name every copy the repo keeps.
 - **Inputs and provenance**, **Untrusted inputs** — per the trust boundaries
   reference.
 - **Assumptions** — your own decisions and researched facts with their R id.
 - **Open questions** — question · options · who decides · blocking /
-  non-blocking. Empty → «—».
+  non-blocking. Empty → "—".
 - **Traceability** — one row per US; every AC, EC and NFR appears in it.
-- **Дизайн** (`## Дизайн`) — the index table of the template: one row per
+- **Design** (`## Design`) — the index table of the template: one row per
   file (D#, path, screen / state shown); D# = the file's number. No design →
-  «—» with the reason.
+  "—" with the reason.
 - `Design:` header — the designs folder. Screens × states cells cite the D#
-  that draws them; ACs may cite «D2», but every behaviour to verify is still
+  that draws them; ACs may cite "D2", but every behaviour to verify is still
   an AC of its own (exact copy the build needs is quoted in the AC).
 - `Supersedes:` — link the old spec, then Edit its Status line only:
   `Status: superseded by SPEC-<date>-<slug>` (a legacy `Статус: …` line keeps
   its language: `Статус: Superseded by SPEC-…`).
+- **Legacy aliases**: older specs may use the Ukrainian template headings —
+  `## Проблема й користувач` = `## Problem and user`, `## Дизайн` = `## Design`,
+  `## Екрани й стани` = `## Screens and states`, `## Взаємодія модулів` =
+  `## Module interaction`, `Статус:` = `Status:`. Read them as equivalent;
+  when revising such a draft, keep its existing headings.
 - **Revising a draft**: keep existing IDs, append new ones; a dropped item
   becomes `(removed) <reason>`.
 
@@ -300,7 +305,7 @@ half-sentence why — never delete a section.
 Structure
 - [ ] File name = `<date>-<slug>.md`, `Spec ID` matches it, `Status: draft`,
       folder matches `Modules` (≥2 → `<specs_dir>`).
-- [ ] Every template section present, in order; inapplicable ones say «—»
+- [ ] Every template section present, in order; inapplicable ones say "—"
       with a reason; no template comments left.
 
 Requirements quality (spec-authoring §2–§3)
@@ -314,9 +319,9 @@ Requirements quality (spec-authoring §2–§3)
 
 Coverage
 - [ ] Every non-ideal cell in Screens × states → AC or Open question.
-- [ ] Designs given → `## Дизайн` lists every file in the folder; every D#
+- [ ] Designs given → `## Design` lists every file in the folder; every D#
       appears in Screens × states; every interaction visible in a design →
-      AC; no AC relies on «як на макеті» without stating the behaviour.
+      AC; no AC relies on "as in the design" without stating the behaviour.
 - [ ] Every action in Module interaction → AC(s); contract changes name
       every copy of the contract; other consumers listed.
 - [ ] Every untrusted input has its isolation stated; nothing weakens an

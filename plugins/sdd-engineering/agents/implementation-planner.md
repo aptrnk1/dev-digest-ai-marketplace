@@ -237,7 +237,7 @@ tasks are routed.
   lane the testing guide prescribes), `Acceptance` (with AC# / R# refs),
   `Verify` (exact commands for that module), `Escalate if`.
 - **Design → FE tasks.** Designs live in `<designs_dir>/<date>-<slug>/D<n>.png`
-  (indexed in the spec's `## Дизайн`). Look at the ones a task touches. Every
+  (indexed in the spec's `## Design`; legacy specs: `## Дизайн`). Look at the ones a task touches. Every
   [FE] task that builds or changes a drawn screen names its files in Steps
   (`design: specs/designs/…/D2.png, D3.png`), so the implementer opens exactly
   those; UI strings shared by two tasks go into `Cross-task decisions`.

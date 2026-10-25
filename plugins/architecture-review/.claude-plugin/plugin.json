@@ -1,7 +1,7 @@
 {
   "name": "architecture-review",
   "displayName": "Architecture Review",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Read-only architecture reviewer agent: layers, dependency direction, module boundaries",
   "author": {
     "name": "aptrnk1"

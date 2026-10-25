@@ -7,8 +7,8 @@ Spec ID: SPEC-2026-01-01-csv-export
 Status: approved
 Modules: api
 
-## Проблема й користувач
-Менеджер хоче вивантажити замовлення за період у CSV.
+## Problem and user
+A manager wants to export the orders for a period as CSV.
 
 ## Acceptance criteria
 - **AC1** (event, US1) When the manager requests `GET /orders/export?from=&to=`, the API shall return `text/csv` with one row per order in the period. `[unit]`

@@ -1,6 +1,6 @@
 ---
 name: spec-authoring
-description: "Writing and reviewing Spec Driven Development feature specs in Ukrainian: EARS acceptance criteria (5 patterns + combinations), ISO/IEC/IEEE 29148 quality attributes, weak words, verification hints (unit / it / e2e / manual), NFRs and the US → AC → verification traceability matrix; plus the Screens × states method for UI designs (Nielsen heuristics, WCAG 2.2 AA), trust boundaries for LLM-facing features (OWASP Top 10 for LLM Applications 2025), Mermaid for module-interaction diagrams, the spec template and the script that saves chat screenshots as design files. Use when writing or reviewing a spec, its Acceptance criteria / NFRs, its UI states or its Inputs and provenance / Untrusted inputs sections."
+description: "Writing and reviewing Spec Driven Development feature specs: EARS acceptance criteria (5 patterns + combinations), ISO/IEC/IEEE 29148 quality attributes, weak words, verification hints (unit / it / e2e / manual), NFRs and the US → AC → verification traceability matrix; plus the Screens × states method for UI designs (Nielsen heuristics, WCAG 2.2 AA), trust boundaries for LLM-facing features (OWASP Top 10 for LLM Applications 2025), Mermaid for module-interaction diagrams, the spec template and the script that saves chat screenshots as design files. Use when writing or reviewing a spec, its Acceptance criteria / NFRs, its UI states or its Inputs and provenance / Untrusted inputs sections."
 ---
 
 # Spec authoring (SDD)
@@ -24,125 +24,129 @@ Paths: `${CLAUDE_SKILL_DIR}/references/…`, `${CLAUDE_SKILL_DIR}/templates/spec
 
 ## 1. Patterns
 
-| Тип | Шаблон | Коли |
+| Type | Template | When |
 |---|---|---|
-| `ubiquitous` | Система повинна (shall) <відповідь>. | діє завжди, без тригера |
-| `event` | КОЛИ <тригер>, система повинна (shall) <відповідь>. | реакція на одну подію |
-| `state` | ПОКИ <стан>, система повинна (shall) <відповідь>. | поведінка протягом стану |
-| `unwanted` | ЯКЩО <небажана умова>, ТОДІ система повинна (shall) <відповідь>. | помилки, збої, зловживання |
-| `optional` | ДЕ <опцію ввімкнено / є фіча>, система повинна (shall) <відповідь>. | налаштування, фіча-прапорці |
+| `ubiquitous` | The system shall <response>. | always applies, no trigger |
+| `event` | WHEN <trigger>, the system shall <response>. | reaction to a single event |
+| `state` | WHILE <state>, the system shall <response>. | behaviour for the duration of a state |
+| `unwanted` | IF <unwanted condition>, THEN the system shall <response>. | errors, failures, abuse |
+| `optional` | WHERE <option is enabled / feature is present>, the system shall <response>. | settings, feature flags |
 
-**Комбінації** (тип = `complex`) — порядок ключів фіксований:
-`ДЕ … ПОКИ … КОЛИ … система повинна (shall) …`.
-Приклад: «ПОКИ триває імпорт, КОЛИ юзер натискає Re-import, API повинен
-(shall) відповісти 409 `import_in_progress`.»
+**Combinations** (type = `complex`) — the keyword order is fixed:
+`WHERE … WHILE … WHEN … the system shall …`.
+Example: "WHILE an import is running, WHEN the user clicks Re-import, the API
+shall respond 409 `import_in_progress`."
 
-**Суб'єкт.** «Система» можна звузити до того, кого видно ззовні:
-`UI`, `API`, `CLI`, `MCP-сервер`, `фоновий воркер`. Не можна — клас, файл,
-функцію.
+**Subject.** "The system" may be narrowed to whatever is visible from outside:
+`UI`, `API`, `CLI`, `MCP server`, `background worker`. Never a class, file or
+function.
+
+Legacy specs written in Ukrainian use the keywords КОЛИ / ПОКИ / ЯКЩО … ТОДІ /
+ДЕ and «система повинна (shall)»; read them as WHEN / WHILE / IF … THEN /
+WHERE / "the system shall".
 
 ## 2. Quality attributes (ISO/IEC/IEEE 29148)
 
-Кожен AC має бути:
-- **singular** — одна поведінка. «… і показати toast, і записати лог» → два AC;
-- **unambiguous** — одне прочитання (див. слабкі слова нижче);
-- **verifiable** — є спостережуваний результат і спосіб перевірки;
-- **feasible** — не суперечить правилам проєкту (`CLAUDE.md`: do-not-touch,
-  секрети, міграції);
-- **necessary** — прибери AC, і щось важливе стане неперевіреним;
-- **implementation-free** — описує поведінку, а не код;
-- **consistent** — не суперечить іншим AC/NFR (перевір пари з однаковим тригером).
+Every AC must be:
+- **singular** — one behaviour. "… and show a toast, and write a log" → two ACs;
+- **unambiguous** — one reading (see weak words below);
+- **verifiable** — there is an observable result and a way to check it;
+- **feasible** — does not contradict project rules (`CLAUDE.md`: do-not-touch,
+  secrets, migrations);
+- **necessary** — remove the AC and something important goes unverified;
+- **implementation-free** — describes behaviour, not code;
+- **consistent** — does not contradict other ACs/NFRs (check pairs with the same trigger).
 
 ## 3. Weak words → replace
 
-| Слабке | Чим замінити |
+| Weak | Replace with |
 |---|---|
-| швидко, миттєво, без затримок | `≤ N мс/с` на якому обсязі (p95) |
-| зручно, інтуїтивно, красиво | конкретна дія/стан: «фокус переходить на …», «кнопка disabled з підказкою …» |
-| коректно, правильно, належним чином | який саме результат: статус, текст, дані |
-| за потреби, якщо можливо, бажано | умова `ДЕ`/`ЯКЩО` або перенести в Open questions |
-| тощо, і т.д., наприклад, і/або | повний перелік |
-| підтримувати X | що саме юзер може зробити з X |
-| великий, багато, довгий | число: `> 500 файлів`, `> 200 символів` |
-| обробити помилку | `unwanted`-AC: що бачить юзер, що лишається в БД |
-| має бути безпечно | конкретна ізоляція (див. `references/llm-trust-boundaries.md`, `engineering-paved-path:security`) |
+| fast, instant, without delay | `≤ N ms/s` at what volume (p95) |
+| convenient, intuitive, nice | a concrete action/state: "focus moves to …", "button disabled with hint …" |
+| correctly, properly, appropriately | which result exactly: status, text, data |
+| if needed, if possible, preferably | a `WHERE`/`IF` condition, or move to Open questions |
+| etc., and so on, for example, and/or | the full list |
+| support X | what exactly the user can do with X |
+| large, many, long | a number: `> 500 files`, `> 200 characters` |
+| handle the error | an `unwanted` AC: what the user sees, what stays in the DB |
+| must be secure | concrete isolation (see `references/llm-trust-boundaries.md`, `engineering-paved-path:security`) |
 
 ## 4. Verification hints
 
-Кожен AC отримує одну або кілька міток — у якому лейні його перевіряють
-(лейни бери з testing guide репо, якщо він є):
+Every AC gets one or more tags — the lane it is verified in
+(take the lanes from the repo's testing guide if there is one):
 
-- `[unit]` — чиста логіка, API-хендлер з фейками/моками, компонентний тест UI,
-  тест рушія без I/O;
-- `[it]` — потрібна реальна інфраструктура (БД, черга): транзакції, міграції,
-  конкурентність, 409 через стан БД;
-- `[e2e]` — видимий у браузері чи CLI сценарій на seed-даних; **ніколи** не
-  перевіряє вивід LLM (e2e детерміновані, без LLM);
-- `[manual]` — лише якщо автоматизувати неможливо (візуал, реальний LLM);
-  вкажи, хто і як перевіряє.
+- `[unit]` — pure logic, an API handler with fakes/mocks, a UI component test,
+  an engine test without I/O;
+- `[it]` — needs real infrastructure (DB, queue): transactions, migrations,
+  concurrency, a 409 caused by DB state;
+- `[e2e]` — a scenario visible in the browser or CLI on seed data; **never**
+  checks LLM output (e2e is deterministic, without an LLM);
+- `[manual]` — only if automation is impossible (visuals, a real LLM);
+  say who checks and how.
 
-Поведінка, що залежить від відповіді LLM, перевіряється `[unit]`/`[it]` з
-мок-провайдером, а не `[e2e]`.
+Behaviour that depends on an LLM response is verified with `[unit]`/`[it]` and a
+mock provider, not `[e2e]`.
 
 ## 5. NFR
 
-Формат: `**NFR<n>** <атрибут>: <вимога з числом> — перевірка: <як>`.
-Типові атрибути: латентність UI/API, час фонової задачі, ліміти (розмір
-входу, кількість файлів, токени), вартість LLM-виклику, a11y (WCAG 2.2 AA),
-i18n (усі рядки в каталозі рядків репо), стійкість (що при перезапуску
-посеред задачі), спостережуваність (що логуються помилки).
+Format: `**NFR<n>** <attribute>: <requirement with a number> — verification: <how>`.
+Typical attributes: UI/API latency, background job duration, limits (input
+size, number of files, tokens), LLM call cost, a11y (WCAG 2.2 AA),
+i18n (all strings in the repo's string catalog), resilience (what happens on a
+restart mid-job), observability (errors are logged).
 
-NFR без числа або без способу перевірки — це побажання; переформулюй або в
-Open questions.
+An NFR without a number or without a way to verify it is a wish; rephrase it or
+move it to Open questions.
 
 ## 6. Traceability
 
-Матриця в кінці спеки:
+The matrix at the end of the spec:
 
 | US | AC | Edge cases | Verification |
 |---|---|---|---|
 | US1 | AC1, AC2 | EC1 | AC1 [unit], AC2 [e2e] |
 
-Правила: кожна US має ≥1 AC; кожен AC посилається на US (або позначений
-`(system)` для наскрізних вимог — безпека, NFR-похідні); кожен Edge case →
-AC або Open question; кожен AC має verification-мітку.
+Rules: every US has ≥1 AC; every AC refers to a US (or is marked
+`(system)` for cross-cutting requirements — security, NFR-derived); every Edge case →
+AC or Open question; every AC has a verification tag.
 
 ## 7. Designs (screenshots → files)
 
-Сабагенти не бачать вкладень із чату, тому макети зберігаються у файли
-`<designs_dir>/<YYYY-MM-DD>-<slug>/D1.png, D2.png…` (дефолт
-`designs_dir` = `specs/designs/`), і будь-який агент читає їх через `Read`.
-`spec-creator` не має Bash, тому скрипт запускає оркестратор або юзер (у
-промпті Claude Code — з префіксом `!`):
+Subagents cannot see chat attachments, so designs are saved as files
+`<designs_dir>/<YYYY-MM-DD>-<slug>/D1.png, D2.png…` (default
+`designs_dir` = `specs/designs/`), and any agent reads them with `Read`.
+`spec-creator` has no Bash, so the script is run by the orchestrator or the user (in
+the Claude Code prompt — with the `!` prefix):
 
 ```bash
 node "${CLAUDE_SKILL_DIR}/scripts/save-designs.mjs" specs/designs/2026-01-15-order-refund
-#   default    зображення з останнього повідомлення юзера, де вони є
-#   --all      усі зображення, які юзер вклав у цій сесії
-#   --file P   додатково скопіювати файл з диска (можна кілька разів)
-#   --session  id сесії (дефолт: $CLAUDE_CODE_SESSION_ID)
+#   default    images from the user's latest message that has any
+#   --all      every image the user attached in this session
+#   --file P   also copy a file from disk (repeatable)
+#   --session  session id (default: $CLAUDE_CODE_SESSION_ID)
 ```
 
-Файли нумеруються далі від наявних `D<n>`; дублікат (sha256) пропускається.
-Індекс макетів — розділ `## Дизайн` спеки.
+Files are numbered after the existing `D<n>`; a duplicate (sha256) is skipped.
+The design index is the spec's `## Design` section.
 
 ## 8. Review checklist (for a spec reviewer)
 
-- [ ] Кожен AC: ID, тип, ключові слова типу, одна поведінка, суб'єкт ззовні.
-- [ ] Жодного слабкого слова з §3.
-- [ ] Для кожного `event` є відповідний `unwanted` (що буде, коли тригер
-      провалюється), або явне пояснення, чому не потрібен.
-- [ ] Немає двох AC з однаковим тригером і різною відповіддю.
-- [ ] Числа узгоджені між AC, NFR і Edge cases.
-- [ ] Traceability повна (§6).
-- [ ] Кожна не-ideal клітинка Screens × states → AC або Open question
+- [ ] Every AC: ID, type, the type's keywords, one behaviour, an outside subject.
+- [ ] No weak word from §3.
+- [ ] Every `event` has a matching `unwanted` (what happens when the trigger
+      fails), or an explicit reason why it is not needed.
+- [ ] No two ACs with the same trigger and a different response.
+- [ ] Numbers agree across ACs, NFRs and Edge cases.
+- [ ] Traceability is complete (§6).
+- [ ] Every non-ideal Screens × states cell → AC or Open question
       (`references/ux-states.md`).
-- [ ] Кожен untrusted вхід має ізоляцію (`references/llm-trust-boundaries.md`).
+- [ ] Every untrusted input has isolation (`references/llm-trust-boundaries.md`).
 
 ## Sources
 
 - Alistair Mavin, [EARS — Easy Approach to Requirements Syntax](https://alistairmavin.com/ears/).
-- ISO/IEC/IEEE 29148 — атрибути якості вимог.
+- ISO/IEC/IEEE 29148 — requirement quality attributes.
 - GitHub Spec Kit, [spec template](https://github.com/github/spec-kit/blob/main/templates/spec-template.md).
 - Nielsen Norman Group, [10 Usability Heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/); [WCAG 2.2](https://www.w3.org/TR/WCAG22/).
 - [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/llm-top-10/).

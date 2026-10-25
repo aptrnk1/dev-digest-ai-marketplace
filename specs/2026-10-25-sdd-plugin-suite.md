@@ -1,45 +1,45 @@
-# Spec: SDD Plugin Suite — перенесення SDD-агентів DevDigest у маркетплейс плагінами
+# Spec: SDD Plugin Suite — moving the DevDigest SDD agents into the marketplace as plugins
 Spec ID: SPEC-2026-10-25-sdd-plugin-suite
 Status: draft
 Supersedes: —
 Modules: plugins/sdd-engineering, plugins/research-tools, plugins/architecture-review, plugins/engineering-paved-path, marketplace
-Source: `/Users/andrii/sources/dev-digest/.claude/` (agents, skills, hooks) і `scripts/`
-Design: слайди «Крок 2–5» (відбір компонентів, dependency graph, пакування, реєстрація)
+Source: `/Users/andrii/sources/dev-digest/.claude/` (agents, skills, hooks) and `scripts/`
+Design: slides "Step 2–5" (component selection, dependency graph, packaging, registration)
 
-## Проблема й користувач
-У репо DevDigest є робочий SDD-конвеєр із сабагентів і skills у `.claude/`:
-spec-creator → implementation-planner → `/run-plan` (implementer по задачах, хвилі) →
-plan-verifier + architecture-reviewer → `/workflow-retro`. Він прив'язаний до DevDigest:
-шляхи `specs/`, `specs/plans/`, `scripts/check.sh`, `TESTING.md`, `INSIGHTS.md`, модулі
-`server/ client/ reviewer-core/ mcp/`, `pnpm arch:check`. Через це в іншому репо його не
-запустиш.
+## Problem and user
+The DevDigest repo has a working SDD pipeline of subagents and skills in `.claude/`:
+spec-creator → implementation-planner → `/run-plan` (implementer per task, waves) →
+plan-verifier + architecture-reviewer → `/workflow-retro`. It is tied to DevDigest:
+the paths `specs/`, `specs/plans/`, `scripts/check.sh`, `TESTING.md`, `INSIGHTS.md`, the modules
+`server/ client/ reviewer-core/ mcp/`, `pnpm arch:check`. Because of that it cannot run in
+another repo.
 
-Користувач — інженер команди в будь-якому репо. Він хоче однією командою поставити
-SDD-конвеєр, а `researcher`, `architecture-reviewer` і стекові skills (React, Next.js,
-Fastify тощо) використовувати й окремо, без SDD.
+The user is a team engineer in any repo. They want to install the SDD pipeline with one
+command, and to use `researcher`, `architecture-reviewer` and the stack skills (React, Next.js,
+Fastify, etc.) on their own too, without SDD.
 
 ## Goals / Non-goals
 **Goals**
-- Чотири плагіни в `plugins/` з графом залежностей (§Dependency graph). Перший реліз
-  кожного має версію `1.0.0`.
-- `sdd-engineering` містить 4 агенти, skills `run-plan` і `workflow-retro`, evals і
-  документацію (README + CHANGELOG).
-- Жодних DevDigest-шляхів і правил в агентах і skills: їх замінюють явні inputs із
-  дефолтами (§Узагальнення).
-- Skills з інших плагінів викликаються лише через namespace, наприклад
+- Four plugins in `plugins/` with a dependency graph (§Dependency graph). The first release
+  of each has version `1.0.0`.
+- `sdd-engineering` contains 4 agents, the skills `run-plan` and `workflow-retro`, evals and
+  documentation (README + CHANGELOG).
+- No DevDigest paths or rules in agents and skills: explicit inputs with defaults replace
+  them (§Generalization).
+- Skills from other plugins are called only through their namespace, for example
   `engineering-paved-path:react-best-practices`.
-- Скрипти, що супроводжують skill, лежать у теці skill і викликаються через
-  `${CLAUDE_SKILL_DIR}`, а не через `.claude/skills/`.
-- Чотири записи в `.claude-plugin/marketplace.json`. Стан каталогу фіксують коміт і теги.
+- Scripts that accompany a skill live in the skill folder and are called through
+  `${CLAUDE_SKILL_DIR}`, not through `.claude/skills/`.
+- Four entries in `.claude-plugin/marketplace.json`. The catalog state is pinned by a commit and tags.
 
-**Non-goals (не переносимо)**
-- Product specs DevDigest (`specs/*.md`, `specs/plans/*.md`, `docs/agent-prompts/`).
-- Secrets, `.mcp.json` DevDigest, `settings.local.json`.
-- Cache: кеш `scripts/check.sh`, `.claude/worktrees/`, `.claude/retros/`, `reports/`.
+**Non-goals (not moved)**
+- DevDigest product specs (`specs/*.md`, `specs/plans/*.md`, `docs/agent-prompts/`).
+- Secrets, the DevDigest `.mcp.json`, `settings.local.json`.
+- Cache: the `scripts/check.sh` cache, `.claude/worktrees/`, `.claude/retros/`, `reports/`.
 - DevDigest-specific instructions: `client-testing`, `pr-self-review`,
-  `engineering-insights`, правила `INJECTION_GUARD`, `vendor/shared`, `SecretsProvider`.
-- Агенти поза відбором: `spec-reviewer`, `test-writer`, `doc-writer`. Посилання на них
-  з агентів, що переносяться, прибираємо.
+  `engineering-insights`, the `INJECTION_GUARD`, `vendor/shared`, `SecretsProvider` rules.
+- Agents outside the selection: `spec-reviewer`, `test-writer`, `doc-writer`. References to them
+  from the agents being moved are removed.
 
 ## Dependency graph
 
@@ -51,81 +51,81 @@ graph LR
   AR -->|^1.0.0| EPP
 ```
 
-| Плагін | Що постачає | Залежить від |
+| Plugin | Provides | Depends on |
 | :- | :- | :- |
 | `engineering-paved-path` | skills: React, Next.js, Fastify, architecture, testing, security (§Skills) | — |
-| `research-tools` | read-only агент `researcher` | — |
-| `architecture-review` | узагальнений агент `architecture-reviewer` | `engineering-paved-path` `^1.0.0` |
-| `sdd-engineering` | агенти `spec-creator`, `implementation-planner`, `implementer`, `plan-verifier`; skills `run-plan`, `workflow-retro`, `spec-authoring`*; evals | усі три, `^1.0.0` |
+| `research-tools` | read-only agent `researcher` | — |
+| `architecture-review` | generalized agent `architecture-reviewer` | `engineering-paved-path` `^1.0.0` |
+| `sdd-engineering` | agents `spec-creator`, `implementation-planner`, `implementer`, `plan-verifier`; skills `run-plan`, `workflow-retro`, `spec-authoring`*; evals | all three, `^1.0.0` |
 
-\* `spec-authoring` об'єднує skills, які використовує лише SDD (див. §Skills).
+\* `spec-authoring` merges the skills that only SDD uses (see §Skills).
 
-`architecture-reviewer` спирається на `onion-architecture`, `react-best-practices`,
-`next-best-practices`, `fastify-best-practices` і `security`, тому `architecture-review`
-жорстко залежить від `engineering-paved-path` (рішення 2026-10-25). `research-tools`
-самодостатній: `researcher` не використовує skills.
+`architecture-reviewer` relies on `onion-architecture`, `react-best-practices`,
+`next-best-practices`, `fastify-best-practices` and `security`, so `architecture-review`
+hard-depends on `engineering-paved-path` (decision 2026-10-25). `research-tools`
+is self-contained: `researcher` uses no skills.
 
-**Як агенти підвантажують skills.** Документація не підтверджує, що frontmatter `skills:`
-приймає skill з іншого плагіна. Тому агенти не використовують `skills:` для чужих skills,
-а першим кроком викликають Skill tool за повним іменем
-(`engineering-paved-path:onion-architecture`). `Skill` має бути в `tools` агента.
+**How agents load skills.** The documentation does not confirm that the `skills:` frontmatter
+accepts a skill from another plugin. So agents do not use `skills:` for other plugins' skills;
+instead, as their first step, they call the Skill tool by full name
+(`engineering-paved-path:onion-architecture`). `Skill` must be in the agent's `tools`.
 
-**Публічність.** Агенти, skills, скрипти й README не містять згадок DevDigest, шляхів
-конкретного репо (`server/`, `client/`, `reviewer-core/`, `mcp/`, `vendor/shared`) чи його
-правил. Приклади в тексті — нейтральні (`src/modules/orders/…`). Перевіряє це AC4.
+**Public content.** Agents, skills, scripts and READMEs contain no mention of DevDigest, of
+paths of a specific repo (`server/`, `client/`, `reviewer-core/`, `mcp/`, `vendor/shared`) or
+of its rules. Examples in the text are neutral (`src/modules/orders/…`). AC4 checks this.
 
-## Skills: що куди
+## Skills: what goes where
 
-| Джерело (`dev-digest/.claude/skills/`) | Куди | Хто використовує |
+| Source (`dev-digest/.claude/skills/`) | Destination | Used by |
 | :- | :- | :- |
 | `react-best-practices`, `next-best-practices` | `engineering-paved-path` | planner, implementer, verifier, architecture-reviewer |
-| `fastify-best-practices` | `engineering-paved-path` | те саме |
-| `onion-architecture` (узагальнити: без `server/`, `pnpm arch:check` → input) | `engineering-paved-path` | planner, verifier, architecture-reviewer |
+| `fastify-best-practices` | `engineering-paved-path` | same |
+| `onion-architecture` (generalize: no `server/`, `pnpm arch:check` → input) | `engineering-paved-path` | planner, verifier, architecture-reviewer |
 | `react-testing-library` | `engineering-paved-path` (testing) | implementer |
 | `security` | `engineering-paved-path` | spec-creator, implementer |
-| `typescript-expert`, `zod`, `drizzle-orm-patterns`, `postgresql-table-design` | не переносимо (рішення 2026-10-25); preload `typescript-expert` в architecture-reviewer прибрати | — |
-| `ears-requirements`, `ux-states-review`, `llm-trust-boundaries` | `sdd-engineering` (лише spec-creator); прибрати DevDigest UI-конвенції | spec-creator |
-| `mermaid-diagram` | `sdd-engineering`, опційно | spec-creator |
-| `client-testing`, `pr-self-review`, `engineering-insights` | не переносимо | — |
+| `typescript-expert`, `zod`, `drizzle-orm-patterns`, `postgresql-table-design` | not moved (decision 2026-10-25); remove the `typescript-expert` preload from architecture-reviewer | — |
+| `ears-requirements`, `ux-states-review`, `llm-trust-boundaries` | `sdd-engineering` (spec-creator only); remove DevDigest UI conventions | spec-creator |
+| `mermaid-diagram` | `sdd-engineering`, optional | spec-creator |
+| `client-testing`, `pr-self-review`, `engineering-insights` | not moved | — |
 
-Сторонні skills (`skills-lock.json`: mcollina/skills, vercel-labs/next-skills,
+Third-party skills (`skills-lock.json`: mcollina/skills, vercel-labs/next-skills,
 sickn33/antigravity-awesome-skills, pproenca/dot-skills,
-giuseppe-trisciuoglio/developer-kit, wshobson/agents) переносимо, лише якщо ліцензія це
-дозволяє. Джерело й ліцензія кожного фіксуються в
+giuseppe-trisciuoglio/developer-kit, wshobson/agents) are moved only if their license
+allows it. The source and license of each are recorded in
 `engineering-paved-path/THIRD_PARTY_NOTICES.md`.
 
-## Узагальнення (DevDigest paths → явні inputs)
+## Generalization (DevDigest paths → explicit inputs)
 
-| Було в DevDigest | Стає |
+| Was in DevDigest | Becomes |
 | :- | :- |
-| `specs/`, `<module>/specs/`, `specs/_template.md` | input `specs_dir:` (дефолт `specs/`); шаблон спеки лежить у плагіні: `${CLAUDE_SKILL_DIR}/templates/spec.md` |
-| `specs/plans/<feature>.md`, `specs/plans/_template.md` | input `plans_dir:` (дефолт `specs/plans/`); шаблон плану в плагіні |
-| `specs/plans/reports/<feature>/` | input `reports_dir:` (дефолт `<plans_dir>/reports/`) |
-| `scripts/check.sh <pkg> <step>` | команди `Verify` з плану. Planner бере їх з `CLAUDE.md`/`package.json` репо або питає користувача |
-| `scripts/plan-lint.mjs` | `skills/run-plan/scripts/plan-lint.mjs`, виклик через `node "${CLAUDE_SKILL_DIR}/scripts/plan-lint.mjs"`; правило «use scripts/check.sh» прибрати |
-| `scripts/workflow-stats.mjs` | `skills/workflow-retro/scripts/workflow-stats.mjs` через `${CLAUDE_SKILL_DIR}` |
-| `scripts/save-designs.mjs`, `specs/designs/<date>-<slug>/D<n>.png` | `skills/spec-authoring/scripts/save-designs.mjs` через `${CLAUDE_SKILL_DIR}`; input `designs_dir:` (дефолт `<specs_dir>/designs/`) |
-| `scripts/worktree-bootstrap.sh` | input `bootstrap:` (команда встановлення залежностей у worktree, опційно) |
-| `pnpm arch:check` (dependency-cruiser) | input `arch_check:` (опційно; без нього лише ручні правила) |
-| `TESTING.md` (лейни) | input `testing_doc:` (опційно); без нього мітки `[unit|it|e2e|manual]` без прив'язки до файлів |
-| модулі `server/ client/ reviewer-core/ mcp/`, теги `[SHARED|BE|FE]` | модулі з `CLAUDE.md`/структури репо, теги лишаються |
-| `CLAUDE.md`/`INSIGHTS.md` модулів | читати, якщо є; `INSIGHTS.md` необов'язковий |
-| `.claude/retros/` | input `retros_dir:` (дефолт `.claude/retros/`) |
-| `Agent(researcher)` у `spec-creator` | `Agent(research-tools:researcher)` |
-| виклики агентів у `run-plan` | `sdd-engineering:implementer`, `sdd-engineering:plan-verifier`, `architecture-review:architecture-reviewer`; `/code-review high` лишається |
-| посилання на `spec-reviewer`, `doc-writer`, `test-writer`, `pr-self-review` | прибрати або позначити як опційні зовнішні кроки |
+| `specs/`, `<module>/specs/`, `specs/_template.md` | input `specs_dir:` (default `specs/`); the spec template lives in the plugin: `${CLAUDE_SKILL_DIR}/templates/spec.md` |
+| `specs/plans/<feature>.md`, `specs/plans/_template.md` | input `plans_dir:` (default `specs/plans/`); the plan template lives in the plugin |
+| `specs/plans/reports/<feature>/` | input `reports_dir:` (default `<plans_dir>/reports/`) |
+| `scripts/check.sh <pkg> <step>` | the `Verify` commands from the plan. The planner takes them from the repo's `CLAUDE.md`/`package.json` or asks the user |
+| `scripts/plan-lint.mjs` | `skills/run-plan/scripts/plan-lint.mjs`, called via `node "${CLAUDE_SKILL_DIR}/scripts/plan-lint.mjs"`; remove the "use scripts/check.sh" rule |
+| `scripts/workflow-stats.mjs` | `skills/workflow-retro/scripts/workflow-stats.mjs` via `${CLAUDE_SKILL_DIR}` |
+| `scripts/save-designs.mjs`, `specs/designs/<date>-<slug>/D<n>.png` | `skills/spec-authoring/scripts/save-designs.mjs` via `${CLAUDE_SKILL_DIR}`; input `designs_dir:` (default `<specs_dir>/designs/`) |
+| `scripts/worktree-bootstrap.sh` | input `bootstrap:` (command that installs dependencies in a worktree, optional) |
+| `pnpm arch:check` (dependency-cruiser) | input `arch_check:` (optional; without it, manual rules only) |
+| `TESTING.md` (lanes) | input `testing_doc:` (optional); without it, labels `[unit|it|e2e|manual]` without binding to files |
+| modules `server/ client/ reviewer-core/ mcp/`, tags `[SHARED|BE|FE]` | modules from the repo's `CLAUDE.md`/structure; the tags stay |
+| module `CLAUDE.md`/`INSIGHTS.md` | read if present; `INSIGHTS.md` is optional |
+| `.claude/retros/` | input `retros_dir:` (default `.claude/retros/`) |
+| `Agent(researcher)` in `spec-creator` | `Agent(research-tools:researcher)` |
+| agent calls in `run-plan` | `sdd-engineering:implementer`, `sdd-engineering:plan-verifier`, `architecture-review:architecture-reviewer`; `/code-review high` stays |
+| references to `spec-reviewer`, `doc-writer`, `test-writer`, `pr-self-review` | remove, or mark as optional external steps |
 
-### Guard-хуки
-Plugin-агенти ігнорують поле `hooks` у frontmatter (а також `permissionMode` і
-`mcpServers`). Тому `spec-creator-guard.sh` і `implementation-planner-guard.sh`
-переносимо в `sdd-engineering/hooks/hooks.json` як `PreToolUse` з matcher
-`Write|Edit|MultiEdit`, а скрипти кладемо в `sdd-engineering/hooks/scripts/`. Plugin-хук
-спрацьовує в усіх сесіях, тож скрипт першим кроком пропускає все, де `agent_type` у
-stdin не дорівнює `sdd-engineering:spec-creator` чи
-`sdd-engineering:implementation-planner`. Дозволені шляхи беруться з тих самих
-дефолтів `specs_dir`/`plans_dir`.
+### Guard hooks
+Plugin agents ignore the `hooks` field in frontmatter (as well as `permissionMode` and
+`mcpServers`). So `spec-creator-guard.sh` and `implementation-planner-guard.sh`
+move into `sdd-engineering/hooks/hooks.json` as `PreToolUse` with the matcher
+`Write|Edit|MultiEdit`, and the scripts go into `sdd-engineering/hooks/scripts/`. A plugin hook
+fires in every session, so the script's first step lets through everything where `agent_type` in
+stdin is not `sdd-engineering:spec-creator` or
+`sdd-engineering:implementation-planner`. The allowed paths come from the same
+`specs_dir`/`plans_dir` defaults.
 
-## Структура репозиторію
+## Repository structure
 ```text
 .claude-plugin/marketplace.json
 plugins/
@@ -172,86 +172,86 @@ plugins/
 }
 ```
 
-## Реєстрація, версії й релізи
-- У `marketplace.json` чотири записи, у кожному `name`, `source: "./plugins/<name>"`,
-  `author`, `description`, `category: "engineering"`. `owner` задається на
-  рівні маркетплейсу, у записі плагіна цю роль виконує `author`.
-- `version` вказуємо лише в `plugin.json`, у записі маркетплейсу його немає
+## Registration, versions and releases
+- `marketplace.json` has four entries, each with `name`, `source: "./plugins/<name>"`,
+  `author`, `description`, `category: "engineering"`. `owner` is set at the
+  marketplace level; in a plugin entry `author` plays that role.
+- `version` is set only in `plugin.json`; the marketplace entry has none
   ([ADR-0002](../docs/adr/0002-versioning-strategy.md)).
-- `CHANGELOG.md` у кожному плагіні у форматі Keep a Changelog. Зверху `## [Unreleased]`,
-  перший запис `## [1.0.0] - <дата>` з переліком перенесеного й посиланням на коміт
-  джерела в dev-digest.
-- Реліз іде так: bump версії в `plugin.json` → CHANGELOG → merge у `main` → тег
-  `<plugin>--v<version>` (`git tag` або `claude plugin tag --push` у теці плагіна).
-  Плагіни підключені за relative path, тому діапазон `^1.0.0` резолвиться саме за цими
-  тегами в репо маркетплейсу.
-- Порядок першого релізу: спершу три залежності, потім `sdd-engineering`.
-- Перейменування агента чи skill або зміна формату артефакту в залежності вимагає bump
-  major і явного розширення діапазону в `sdd-engineering`.
+- Each plugin has a `CHANGELOG.md` in Keep a Changelog format. At the top `## [Unreleased]`,
+  the first entry `## [1.0.0] - <date>` lists what was moved and links to the source
+  commit in dev-digest.
+- A release goes: bump the version in `plugin.json` → CHANGELOG → merge into `main` → tag
+  `<plugin>--v<version>` (`git tag` or `claude plugin tag --push` in the plugin folder).
+  The plugins are connected by relative path, so the range `^1.0.0` resolves against exactly
+  these tags in the marketplace repo.
+- Order of the first release: the three dependencies first, then `sdd-engineering`.
+- Renaming an agent or skill, or changing an artifact format in a dependency, requires a major
+  bump and an explicit widening of the range in `sdd-engineering`.
 
-## README `sdd-engineering`: обов'язкові розділи
-1. Що це і для кого.
-2. Встановлення однією командою і перелік залежностей, що підтягнуться.
-3. Схема конвеєра (Mermaid): spec-creator (+ researcher) → людина ставить `approved` →
-   implementation-planner → людина ставить `Approved` → `/sdd-engineering:run-plan` →
-   хвилі implementer → plan-verifier ∥ architecture-reviewer ∥ `/code-review` → цикл
-   виправлень (≤3) → `/sdd-engineering:workflow-retro`.
-4. Таблиця компонентів: агент/skill, модель, етап, вхід, вихід, доступ на запис.
-5. Inputs і їхні дефолти (`specs_dir`, `plans_dir`, `reports_dir`, `bootstrap`,
-   `arch_check`, `testing_doc`, `retros_dir`) і як задати їх для свого репо.
-6. Guard-хуки: що обмежують, залежність від `jq`/`python3`, нагадування, що плагін
-   запускає скрипти з правами користувача.
-7. Режими виконання (multi-agent/single-agent) і як продовжити прогін з середини.
-8. Посилання на CHANGELOG і першоджерела (Spec Kit, EARS, obra/superpowers, Anthropic
-   «Building effective agents»), які вже наведені в `dev-digest/.claude/agents/README.md`.
+## `sdd-engineering` README: required sections
+1. What it is and who it is for.
+2. One-command install and the list of dependencies it pulls in.
+3. Pipeline diagram (Mermaid): spec-creator (+ researcher) → a human sets `approved` →
+   implementation-planner → a human sets `Approved` → `/sdd-engineering:run-plan` →
+   implementer waves → plan-verifier ∥ architecture-reviewer ∥ `/code-review` → fix
+   loop (≤3) → `/sdd-engineering:workflow-retro`.
+4. Component table: agent/skill, model, stage, input, output, write access.
+5. Inputs and their defaults (`specs_dir`, `plans_dir`, `reports_dir`, `bootstrap`,
+   `arch_check`, `testing_doc`, `retros_dir`) and how to set them for your repo.
+6. Guard hooks: what they restrict, the dependency on `jq`/`python3`, a reminder that the plugin
+   runs scripts with the user's permissions.
+7. Execution modes (multi-agent/single-agent) and how to resume a run from the middle.
+8. Links to the CHANGELOG and the primary sources (Spec Kit, EARS, obra/superpowers, Anthropic
+   "Building effective agents"), which are already cited in `dev-digest/.claude/agents/README.md`.
 
 ## Acceptance criteria
-- AC1. `claude plugin validate . --strict` проходить для маркетплейсу й кожного з 4 плагінів.
-- AC2. `/plugin install sdd-engineering@dev-digest` ставить і вмикає три залежності.
-  `claude plugin list` не показує помилок залежностей.
-- AC3. `research-tools`, `architecture-review` і `engineering-paved-path` ставляться й
-  працюють поодинці.
+- AC1. `claude plugin validate . --strict` passes for the marketplace and for each of the 4 plugins.
+- AC2. `/plugin install sdd-engineering@dev-digest` installs and enables the three dependencies.
+  `claude plugin list` shows no dependency errors.
+- AC3. `research-tools`, `architecture-review` and `engineering-paved-path` install and
+  work on their own.
 - AC4. `grep -rniE 'dev-?digest|reviewer-core|vendor/shared|scripts/check\.sh|\.claude/skills/|INJECTION_GUARD|server/src|client/src|aptrnk1/dev'
-  plugins/` нічого не знаходить в агентах, skills і скриптах. Дозволені лише рядки про
-  походження в CHANGELOG і THIRD_PARTY_NOTICES.
-- AC4a. Кожен із 4 плагінів має README: що він дає, як встановити, як викликати кожен
-  агент чи skill (з прикладом), inputs і дефолти, залежності, обмеження.
-- AC5. Кожен виклик чужого skill чи агента в `plugins/` використовує namespaced ім'я
+  plugins/` finds nothing in agents, skills and scripts. Only provenance lines in CHANGELOG and
+  THIRD_PARTY_NOTICES are allowed.
+- AC4a. Each of the 4 plugins has a README: what it provides, how to install it, how to call each
+  agent or skill (with an example), inputs and defaults, dependencies, limitations.
+- AC5. Every call to another plugin's skill or agent in `plugins/` uses the namespaced name
   (`<plugin>:<name>`).
-- AC6. `run-plan` і `workflow-retro` запускають свої скрипти через
-  `${CLAUDE_SKILL_DIR}/scripts/…` і працюють у репо без `scripts/` у корені.
-- AC7. Guard-хук блокує запис `sdd-engineering:spec-creator` поза `specs_dir` і не
-  впливає на головну сесію та інших агентів.
-- AC8. `researcher`, `plan-verifier` і `architecture-reviewer` мають
+- AC6. `run-plan` and `workflow-retro` run their scripts through
+  `${CLAUDE_SKILL_DIR}/scripts/…` and work in a repo without `scripts/` at the root.
+- AC7. The guard hook blocks `sdd-engineering:spec-creator` from writing outside `specs_dir` and
+  does not affect the main session or other agents.
+- AC8. `researcher`, `plan-verifier` and `architecture-reviewer` have
   `disallowedTools: Write, Edit, NotebookEdit`.
-- AC9. `claude plugin eval plugins/sdd-engineering` проходить. Evals пишемо нові, мінімум по
-  одному кейсу на кожен з 4 агентів і 2 workflow-skills; у `research-tools` і
-  `architecture-review` по одному кейсу на агента.
-- AC10. Існують теги `<plugin>--v1.0.0` для всіх чотирьох плагінів. Кожен плагін має
-  README, CHANGELOG і LICENSE, а кореневий `README.md` перелічує їх у таблиці.
+- AC9. `claude plugin eval plugins/sdd-engineering` passes. Evals are written from scratch, at least
+  one case for each of the 4 agents and 2 workflow skills; in `research-tools` and
+  `architecture-review`, one case per agent.
+- AC10. Tags `<plugin>--v1.0.0` exist for all four plugins. Each plugin has a
+  README, CHANGELOG and LICENSE, and the root `README.md` lists them in a table.
 
-## Ризики
-- **`agent_type` у stdin хука.** Документація хуків підтверджує, що `PreToolUse` у
-  сабагенті отримує `agent_type`, а для plugin-агента він має вигляд `<plugin>:<agent>`.
-  Ризик закрито, лишається перевірка живим прогоном.
-- **`Agent(research-tools:researcher)` у `tools`.** Документація показує `Agent(name)` лише з
-  простими іменами. Якщо namespaced ім'я не спрацює, `spec-creator` отримує `Agent` без
-  обмеження, а промпт дозволяє кликати лише `research-tools:researcher`.
-- **Сабагент не запускає сабагентів.** `spec-creator` кличе `researcher` лише як
-  головна сесія (`claude --agent sdd-engineering:spec-creator`), інакше повертає блок
-  `needs-research`. Цю поведінку зберігаємо і пояснюємо в README.
-- **Ліцензії сторонніх skills.** Skill без сумісної ліцензії не переносимо, а в README
-  даємо посилання на першоджерело.
-- **Bash read-only тримається лише на промпті** в `plan-verifier` і
-  `architecture-reviewer`, як і в джерелі.
+## Risks
+- **`agent_type` in the hook's stdin.** The hooks documentation confirms that `PreToolUse` in a
+  subagent receives `agent_type`, and for a plugin agent it has the form `<plugin>:<agent>`.
+  Risk closed; a live-run check remains.
+- **`Agent(research-tools:researcher)` in `tools`.** The documentation shows `Agent(name)` only with
+  simple names. If the namespaced name does not work, `spec-creator` gets an unrestricted `Agent`,
+  and the prompt allows calling only `research-tools:researcher`.
+- **A subagent does not launch subagents.** `spec-creator` calls `researcher` only when it is the
+  main session (`claude --agent sdd-engineering:spec-creator`); otherwise it returns a
+  `needs-research` block. We keep this behaviour and explain it in the README.
+- **Third-party skill licenses.** A skill without a compatible license is not moved; the README
+  links to the original source instead.
+- **Bash read-only rests only on the prompt** in `plan-verifier` and
+  `architecture-reviewer`, as in the source.
 
-## Рішення (2026-10-25)
-1. Evals пишемо нові під `claude plugin eval` (AC9).
-2. `typescript-expert`, `zod`, `drizzle-orm-patterns` і `postgresql-table-design` не
-   переносимо. `engineering-paved-path` містить лише React, Next.js, Fastify, architecture,
-   testing і security.
-3. `save-designs.mjs` переносимо в `sdd-engineering/skills/spec-authoring/scripts/`.
-4. Спеки пишемо українською, як у джерелі. Input для мови не додаємо.
+## Decisions (2026-10-25)
+1. Evals are written from scratch for `claude plugin eval` (AC9).
+2. `typescript-expert`, `zod`, `drizzle-orm-patterns` and `postgresql-table-design` are not
+   moved. `engineering-paved-path` contains only React, Next.js, Fastify, architecture,
+   testing and security.
+3. `save-designs.mjs` moves into `sdd-engineering/skills/spec-authoring/scripts/`.
+4. Specs are written in English (changed in sdd-engineering 1.1.0; the source was Ukrainian). Readers still accept the legacy Ukrainian headings. No language input is added.
 
-## Відкриті питання
-— (немає)
+## Open questions
+— (none)

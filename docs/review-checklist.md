@@ -10,6 +10,7 @@ Go through this list for every PR that touches `plugins/` or `.claude-plugin/`.
 - [ ] Every path starts with `./`, has no `..` and no backslashes.
 - [ ] Plugin has `README.md`, `LICENSE` and an updated `CHANGELOG.md`.
 - [ ] Root `README.md` plugin table updated for new or removed plugins.
+- [ ] All documents are in English (see Language in `CLAUDE.md`).
 - [ ] CI validation is green, and the author installed the plugin locally.
 
 ## Skills, agents, commands
