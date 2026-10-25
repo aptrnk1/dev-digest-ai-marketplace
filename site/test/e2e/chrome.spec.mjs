@@ -102,13 +102,19 @@ for (const scheme of ['light', 'dark']) {
   });
 }
 
-test('palette has no serious/critical axe violations (NFR5)', async ({ page }) => {
-  await page.goto('./');
-  await page.keyboard.press('ControlOrMeta+k');
-  await expect(page.getByRole('dialog')).toBeVisible();
-  const { violations } = await new AxeBuilder({ page }).include('.palette').analyze();
-  expect(violations.filter((v) => v.impact === 'serious' || v.impact === 'critical').map((v) => v.id)).toEqual([]);
-});
+for (const scheme of ['light', 'dark']) {
+  test(`palette has no serious/critical axe violations, ${scheme} theme (NFR5)`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: scheme });
+    await page.goto('./');
+    await page.keyboard.press('ControlOrMeta+k');
+    await expect(page.getByRole('dialog')).toBeVisible();
+    // The palette fades in; axe must see the settled colours, not a half-transparent frame.
+    await page.locator('.palette-backdrop').evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
+    const { violations } = await new AxeBuilder({ page }).include('.palette').analyze();
+    const bad = violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
+    expect(bad.flatMap((v) => v.nodes.slice(0, 3).map((n) => `${v.id}: ${n.target.join(' ')} — ${n.any[0]?.message ?? ''}`))).toEqual([]);
+  });
+}
 
 test('320 px wide: no horizontal scroll (NFR6, EC27)', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 640 });
