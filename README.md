@@ -17,6 +17,8 @@ Claude Code plugin marketplace.
 
 ## Adding a plugin
 
+Full rules: [docs/plugin-authoring.md](docs/plugin-authoring.md), [docs/release-process.md](docs/release-process.md), [docs/review-checklist.md](docs/review-checklist.md).
+
 1. Create `plugins/<name>/.claude-plugin/plugin.json` with the same `name` as the folder.
 2. Put components at the plugin root: `skills/`, `agents/`, `commands/`, `hooks/hooks.json`, `.mcp.json`.
 3. Add an entry to `.claude-plugin/marketplace.json` with `"source": "./plugins/<name>"`.
